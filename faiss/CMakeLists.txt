@@ -137,6 +137,7 @@ set(FAISS_SRC
   impl/HNSW.cpp
   impl/hnsw/LockVector.cpp
   impl/hnsw/MinimaxHeap.cpp
+  impl/bf16_distance_amx.cpp
   impl/NSG.cpp
   impl/PolysemousTraining.cpp
   impl/ProductQuantizer.cpp
@@ -271,6 +272,7 @@ set(FAISS_HEADERS
   impl/HNSW.h
   impl/hnsw/LockVector.h
   impl/hnsw/MinimaxHeap.h
+  impl/bf16_distance_amx.h
   impl/LocalSearchQuantizer.h
   impl/ProductAdditiveQuantizer.h
   impl/fast_scan/LookupTableScaler.h

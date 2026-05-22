@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <optional>
 #include <vector>
 
@@ -132,6 +133,27 @@ struct IndexHNSW : Index {
     virtual void permute_entries(const idx_t* perm);
 
     DistanceComputer* get_distance_computer() const override;
+
+    // ===== BF16 + AMX search acceleration =====
+
+    /// BF16 vector storage [ntotal × d], row-major contiguous
+    std::vector<uint16_t> bf16_storage;
+
+    /// Precomputed L2 norms ||x||² for each vector (used for L2 distance)
+    std::vector<float> bf16_norms;
+
+    /// Whether BF16 search is enabled
+    bool use_bf16_search = false;
+
+    /// Whether to use AMX (otherwise AVX512 BF16)
+    bool use_amx = false;
+
+    /// Build BF16 storage from existing FP32 vectors in storage.
+    /// Only works when storage is IndexFlat or similar flat layout.
+    void build_bf16_storage();
+
+    /// Get a BF16-accelerated distance computer (returns nullptr if not enabled)
+    DistanceComputer* get_bf16_distance_computer() const;
 };
 
 /** Flat index topped with with a HNSW structure to access elements

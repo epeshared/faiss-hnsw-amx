@@ -277,6 +277,25 @@ int search_from_candidates_panorama(
         int nres_in = 0,
         const SearchParameters* params = nullptr);
 
+/// BF16 + AMX accelerated version of search_from_candidates
+int search_from_candidates_bf16(
+        const HNSW& hnsw,
+        DistanceComputer& qdis,
+        ResultHandler<HNSW::C>& res,
+        HNSW::MinimaxHeap& candidates,
+        VisitedTable& vt,
+        HNSWStats& stats,
+        int level,
+        int nres_in,
+        const SearchParametersHNSW* params,
+        const uint16_t* bf16_vectors,
+        const float* bf16_norms,
+        const uint16_t* query_bf16,
+        float query_norm,
+        int dim,
+        bool is_ip,
+        bool use_amx);
+
 HNSWStats greedy_update_nearest(
         const HNSW& hnsw,
         DistanceComputer& qdis,

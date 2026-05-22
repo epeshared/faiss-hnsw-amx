@@ -31,6 +31,7 @@
 #include <faiss/impl/ResultHandler.h>
 #include <faiss/impl/VisitedTable.h>
 #include <faiss/impl/hnsw/MinimaxHeap.h>
+#include <faiss/impl/bf16_distance_amx.h>
 #include <faiss/utils/random.h>
 #include <faiss/utils/sorting.h>
 
@@ -53,6 +54,15 @@ DistanceComputer* storage_distance_computer(const Index* storage) {
     } else {
         return storage->get_distance_computer();
     }
+}
+
+// Extract k from a result handler for BF16 search path
+int extract_k_from_ResultHandler(ResultHandler<HNSW::C>& res) {
+    using RH = HeapBlockResultHandler<HNSW::C>;
+    if (auto hres = dynamic_cast<RH::SingleResultHandler*>(&res)) {
+        return hres->k;
+    }
+    return 1;
 }
 
 void hnsw_add_vertices(
@@ -264,6 +274,10 @@ void hnsw_search(
     idx_t check_period = InterruptCallback::get_period_hint(
             hnsw.max_level * index->d * efSearch);
 
+    // BF16 acceleration path
+    const bool bf16_enabled = index->use_bf16_search &&
+            !index->bf16_storage.empty();
+
     for (idx_t i0 = 0; i0 < n; i0 += check_period) {
         idx_t i1 = std::min(i0 + check_period, n);
         std::exception_ptr ex;
@@ -285,6 +299,12 @@ void hnsw_search(
                 omp_capture_exception(ex, [&] { interrupt = true; });
             }
 
+            // Per-thread BF16 query buffer
+            std::vector<uint16_t> query_bf16;
+            if (bf16_enabled) {
+                query_bf16.resize(index->d);
+            }
+
 #pragma omp for reduction(+ : n1, n2, ndis, nhops) schedule(guided)
             for (idx_t i = i0; i < i1; i++) {
                 if (interrupt.load(std::memory_order_relaxed)) {
@@ -294,12 +314,76 @@ void hnsw_search(
                     res->begin(i);
                     dis->set_query(x + i * index->d);
 
+                if (bf16_enabled) {
+                    // Convert query to BF16
+                    const float* query_fp32 = x + i * index->d;
+                    for (int j = 0; j < index->d; j++) {
+                        uint32_t fp32_bits;
+                        memcpy(&fp32_bits, &query_fp32[j], sizeof(uint32_t));
+                        uint32_t rounding_bias =
+                                ((fp32_bits >> 16) & 1) + 0x7FFF;
+                        query_bf16[j] = static_cast<uint16_t>(
+                                (fp32_bits + rounding_bias) >> 16);
+                    }
+
+                    // Compute query norm for L2
+                    float query_norm = 0.0f;
+                    if (index->metric_type == METRIC_L2) {
+                        for (int j = 0; j < index->d; j++) {
+                            query_norm += query_fp32[j] * query_fp32[j];
+                        }
+                    }
+
+                    bool is_ip = (index->metric_type == METRIC_INNER_PRODUCT);
+
+                    // Upper levels: use normal DistanceComputer (few hops)
+                    HNSW::storage_idx_t nearest = hnsw.entry_point;
+                    float d_nearest = (*dis)(nearest);
+
+                    for (int level = hnsw.max_level; level >= 1; level--) {
+                        HNSWStats local_stats = greedy_update_nearest(
+                                hnsw, *dis, level, nearest, d_nearest);
+                    }
+
+                    // Level 0: use BF16 batch-16 search
+                    int ef = std::max(efSearch,
+                            (int)extract_k_from_ResultHandler(*res));
+                    HNSW::MinimaxHeap candidates(ef);
+                    candidates.push(nearest, d_nearest);
+
+                    HNSWStats search_stats;
+                    search_from_candidates_bf16(
+                            hnsw,
+                            *dis,
+                            *res,
+                            candidates,
+                            *vt,
+                            search_stats,
+                            0,  // level 0
+                            0,
+                            params,
+                            index->bf16_storage.data(),
+                            index->bf16_norms.empty()
+                                    ? nullptr
+                                    : index->bf16_norms.data(),
+                            query_bf16.data(),
+                            query_norm,
+                            index->d,
+                            is_ip,
+                            index->use_amx);
+
+                    n1 += search_stats.n1;
+                    n2 += search_stats.n2;
+                    ndis += search_stats.ndis;
+                    nhops += search_stats.nhops;
+                } else {
                     HNSWStats stats =
                             hnsw.search(*dis, index, *res, *vt, params);
                     n1 += stats.n1;
                     n2 += stats.n2;
                     ndis += stats.ndis;
                     nhops += stats.nhops;
+                }
                     res->end();
                     vt->advance();
                 } catch (...) {
@@ -1209,6 +1293,63 @@ faiss::NumericType IndexHNSWCagra::get_numeric_type() const {
 
 void IndexHNSWCagra::set_numeric_type(faiss::NumericType numeric_type) {
     numeric_type_ = numeric_type;
+}
+
+/**************************************************************
+ * IndexHNSW BF16 storage implementation
+ **************************************************************/
+
+void IndexHNSW::build_bf16_storage() {
+    // Only works with IndexFlat-based storage
+    auto flat = dynamic_cast<const IndexFlat*>(storage);
+    FAISS_THROW_IF_NOT_MSG(flat, "build_bf16_storage requires IndexFlat storage");
+    FAISS_THROW_IF_NOT_MSG(flat->ntotal > 0, "storage is empty");
+
+    const idx_t n = flat->ntotal;
+    const int dim = flat->d;
+    const float* xb = flat->get_xb();
+
+    // Allocate BF16 storage: n vectors × dim BF16 values
+    bf16_storage.resize(n * dim);
+
+    // Convert FP32 → BF16 (truncation: drop lower 16 bits of mantissa)
+    for (idx_t i = 0; i < n * dim; i++) {
+        uint32_t fp32_bits;
+        memcpy(&fp32_bits, &xb[i], sizeof(uint32_t));
+        // Round-to-nearest-even: add 0x7FFF + bit[16] for rounding
+        uint32_t rounding_bias = ((fp32_bits >> 16) & 1) + 0x7FFF;
+        bf16_storage[i] = static_cast<uint16_t>((fp32_bits + rounding_bias) >> 16);
+    }
+
+    // Precompute L2 norms for L2 distance: ||x||² = x·x
+    if (metric_type == METRIC_L2) {
+        bf16_norms.resize(n);
+        for (idx_t i = 0; i < n; i++) {
+            float norm = 0.0f;
+            const float* xi = xb + i * dim;
+            for (int j = 0; j < dim; j++) {
+                norm += xi[j] * xi[j];
+            }
+            bf16_norms[i] = norm;
+        }
+    }
+
+    // Detect AMX support at runtime
+    use_amx = cpu_has_amx_bf16();
+    if (use_amx) {
+        request_amx_permission();
+    }
+    use_bf16_search = true;
+}
+
+DistanceComputer* IndexHNSW::get_bf16_distance_computer() const {
+    if (!use_bf16_search) {
+        return nullptr;
+    }
+    // For BF16, we still use the normal distance computer for set_query().
+    // The BF16 batch distance is invoked directly in search_from_candidates().
+    return storage_distance_computer(storage);
+}
 }
 
 } // namespace faiss

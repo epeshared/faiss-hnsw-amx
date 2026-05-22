@@ -18,6 +18,17 @@
 #include <faiss/impl/ResultHandler.h>
 #include <faiss/impl/VisitedTable.h>
 #include <faiss/impl/hnsw/MinimaxHeap.h>
+#include <faiss/impl/bf16_distance_amx.h>
+#include <faiss/utils/prefetch.h>
+
+#include <faiss/impl/platform_macros.h>
+
+#ifdef __AVX2__
+#include <immintrin.h>
+
+#include <limits>
+#include <type_traits>
+#endif
 
 namespace faiss {
 
@@ -985,6 +996,7 @@ int search_from_candidates_panorama(
             }
             candidates.push(idx, exact_distances[i]);
         }
+        }
 
         nstep++;
         if (!do_dis_check && nstep > efSearch) {
@@ -1005,6 +1017,184 @@ int search_from_candidates_panorama(
     return nres;
 }
 
+/** BF16 + AMX accelerated version of search_from_candidates.
+ *  Uses batch-16 distance computation with AMX tiles or AVX512 BF16.
+ *  The query vector is passed as BF16 (converted once at the top level).
+ */
+int search_from_candidates_bf16(
+        const HNSW& hnsw,
+        DistanceComputer& qdis,
+        ResultHandler<C>& res,
+        MinimaxHeap& candidates,
+        VisitedTable& vt,
+        HNSWStats& stats,
+        int level,
+        int nres_in,
+        const SearchParametersHNSW* params,
+        const uint16_t* bf16_vectors,
+        const float* bf16_norms,
+        const uint16_t* query_bf16,
+        float query_norm,
+        int dim,
+        bool is_ip,
+        bool use_amx) {
+    int nres = nres_in;
+    int ndis = 0;
+
+    bool do_dis_check = params ? params->check_relative_distance
+                               : hnsw.check_relative_distance;
+    int efSearch = params ? params->efSearch : hnsw.efSearch;
+    const IDSelector* sel = params ? params->sel : nullptr;
+
+    C::T threshold = res.threshold;
+    for (int i = 0; i < candidates.size(); i++) {
+        idx_t v1 = candidates.ids[i];
+        float d = candidates.dis[i];
+        FAISS_ASSERT(v1 >= 0);
+        if (!sel || sel->is_member(v1)) {
+            if (d < threshold) {
+                if (res.add_result(d, v1)) {
+                    threshold = res.threshold;
+                }
+            }
+        }
+        vt.set(v1);
+    }
+
+    int nstep = 0;
+    static constexpr int BATCH_SIZE = 16;
+
+    while (candidates.size() > 0) {
+        float d0 = 0;
+        int v0 = candidates.pop_min(&d0);
+
+        if (do_dis_check) {
+            int n_dis_below = candidates.count_below(d0);
+            if (n_dis_below >= efSearch) {
+                break;
+            }
+        }
+
+        size_t begin, end;
+        hnsw.neighbor_range(v0, level, &begin, &end);
+
+        // Pre-scan to find valid neighbors and prefetch
+        size_t jmax = begin;
+        for (size_t j = begin; j < end; j++) {
+            int v1 = hnsw.neighbors[j];
+            if (v1 < 0)
+                break;
+            prefetch_L2(vt.visited.data() + v1);
+            jmax += 1;
+        }
+
+        int counter = 0;
+        size_t saved_j[BATCH_SIZE];
+
+        threshold = res.threshold;
+
+        auto add_to_heap = [&](const size_t idx, const float dis) {
+            if (!sel || sel->is_member(idx)) {
+                if (dis < threshold) {
+                    if (res.add_result(dis, idx)) {
+                        threshold = res.threshold;
+                        nres += 1;
+                    }
+                }
+            }
+            candidates.push(idx, dis);
+        };
+
+        for (size_t j = begin; j < jmax; j++) {
+            int v1 = hnsw.neighbors[j];
+
+            bool vget = vt.get(v1);
+            vt.set(v1);
+            saved_j[counter] = v1;
+            counter += vget ? 0 : 1;
+
+            if (counter == BATCH_SIZE) {
+                // Prefetch BF16 vectors for the batch
+                for (int b = 0; b < BATCH_SIZE; b++) {
+                    const uint16_t* vec_ptr =
+                            bf16_vectors + saved_j[b] * dim;
+                    prefetch_L2(vec_ptr);
+                    if (dim > 32) prefetch_L2(vec_ptr + 32);
+                }
+
+                // Batch BF16 distance computation
+                float dis[BATCH_SIZE];
+                idx_t ids[BATCH_SIZE];
+                for (int b = 0; b < BATCH_SIZE; b++) {
+                    ids[b] = saved_j[b];
+                }
+
+                bf16_batch_distances(
+                        query_bf16,
+                        bf16_vectors,
+                        ids,
+                        dis,
+                        BATCH_SIZE,
+                        dim,
+                        use_amx,
+                        is_ip,
+                        bf16_norms,
+                        query_norm);
+
+                for (int id16 = 0; id16 < BATCH_SIZE; id16++) {
+                    add_to_heap(saved_j[id16], dis[id16]);
+                }
+
+                ndis += BATCH_SIZE;
+                counter = 0;
+            }
+        }
+
+        // Handle remaining candidates (< BATCH_SIZE) with same BF16 path
+        if (counter > 0) {
+            float dis[BATCH_SIZE];
+            idx_t ids[BATCH_SIZE];
+            for (int b = 0; b < counter; b++) {
+                ids[b] = saved_j[b];
+            }
+
+            bf16_batch_distances(
+                    query_bf16,
+                    bf16_vectors,
+                    ids,
+                    dis,
+                    counter,
+                    dim,
+                    use_amx,
+                    is_ip,
+                    bf16_norms,
+                    query_norm);
+
+            for (int icnt = 0; icnt < counter; icnt++) {
+                add_to_heap(saved_j[icnt], dis[icnt]);
+            }
+
+            ndis += counter;
+        }
+
+        nstep++;
+        if (!do_dis_check && nstep > efSearch) {
+            break;
+        }
+    }
+
+    if (level == 0) {
+        stats.n1++;
+        if (candidates.size() == 0) {
+            stats.n2++;
+        }
+        stats.ndis += ndis;
+        stats.nhops += nstep;
+    }
+
+    return nres;
+}
+
 template <typename T, typename Container, typename Compare>
 void reservePriorityQueue(
         std::priority_queue<T, Container, Compare>& q,
@@ -1016,6 +1206,7 @@ void reservePriorityQueue(
     access.c.reserve(size);
     q = std::move(access);
 }
+
 
 std::priority_queue<HNSW::Node> search_from_candidate_unbounded(
         const HNSW& hnsw,
