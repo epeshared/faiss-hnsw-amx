@@ -123,6 +123,7 @@ void amx_tile_release();
 /// @param is_ip         true=inner product, false=L2
 /// @param bf16_norms    [N] precomputed ||x||² (needed for L2, can be nullptr for IP)
 /// @param query_norm_sq ||query||² (needed for L2)
+/// @param tiles_configured  if true, caller has already configured AMX tiles (skip config/release)
 void bf16_batch_distances(
     const uint16_t* query_bf16,
     const uint16_t* bf16_data,
@@ -133,6 +134,7 @@ void bf16_batch_distances(
     bool use_amx,
     bool is_ip,
     const float* bf16_norms = nullptr,
-    float query_norm_sq = 0.0f);
+    float query_norm_sq = 0.0f,
+    bool tiles_configured = false);
 
 } // namespace faiss

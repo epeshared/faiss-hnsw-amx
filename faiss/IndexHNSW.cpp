@@ -372,6 +372,8 @@ void hnsw_search(
                             is_ip,
                             index->use_amx);
 
+                    vt.advance();
+
                     n1 += search_stats.n1;
                     n2 += search_stats.n2;
                     ndis += search_stats.ndis;

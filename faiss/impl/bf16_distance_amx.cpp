@@ -255,7 +255,8 @@ void bf16_batch_distances(
     bool use_amx,
     bool is_ip,
     const float* bf16_norms,
-    float query_norm_sq)
+    float query_norm_sq,
+    bool tiles_configured)
 {
     // Build pointer array
     const uint16_t* ptrs[16];
@@ -289,7 +290,9 @@ void bf16_batch_distances(
 
 #if defined(__AMX_BF16__)
     if (use_amx) {
-        amx_tile_config_batch16();
+        if (!tiles_configured) {
+            amx_tile_config_batch16();
+        }
 
         // Process in batches of 16
         size_t i = 0;
@@ -300,7 +303,9 @@ void bf16_batch_distances(
             compute_batch(i, count - i);
         }
 
-        amx_tile_release();
+        if (!tiles_configured) {
+            amx_tile_release();
+        }
         return;
     }
 #endif

@@ -1064,6 +1064,13 @@ int search_from_candidates_bf16(
     int nstep = 0;
     static constexpr int BATCH_SIZE = 16;
 
+    // Configure AMX tiles once for the entire search (avoid per-batch overhead)
+    bool amx_configured = false;
+    if (use_amx) {
+        amx_tile_config_batch16();
+        amx_configured = true;
+    }
+
     while (candidates.size() > 0) {
         float d0 = 0;
         int v0 = candidates.pop_min(&d0);
@@ -1139,7 +1146,8 @@ int search_from_candidates_bf16(
                         use_amx,
                         is_ip,
                         bf16_norms,
-                        query_norm);
+                        query_norm,
+                        amx_configured);
 
                 for (int id16 = 0; id16 < BATCH_SIZE; id16++) {
                     add_to_heap(saved_j[id16], dis[id16]);
@@ -1168,7 +1176,8 @@ int search_from_candidates_bf16(
                     use_amx,
                     is_ip,
                     bf16_norms,
-                    query_norm);
+                    query_norm,
+                    amx_configured);
 
             for (int icnt = 0; icnt < counter; icnt++) {
                 add_to_heap(saved_j[icnt], dis[icnt]);
@@ -1181,6 +1190,10 @@ int search_from_candidates_bf16(
         if (!do_dis_check && nstep > efSearch) {
             break;
         }
+    }
+
+    if (amx_configured) {
+        amx_tile_release();
     }
 
     if (level == 0) {
