@@ -4,9 +4,13 @@
  *
  * BF16 + AMX accelerated distance computation for HNSW search.
  * Ported from hnswlib-amx project.
+ *
+ * Platform: requires Linux x86_64 with AMX/AVX512-BF16 support.
  */
 
 #include "bf16_distance_amx.h"
+
+#if defined(__linux__) && defined(__x86_64__)
 
 #include <cpuid.h>
 #include <sys/syscall.h>
@@ -19,6 +23,8 @@
 #if defined(__AMX_BF16__)
 #include <immintrin.h>
 #endif
+
+#include <faiss/impl/FaissAssert.h>
 
 namespace faiss {
 
@@ -42,9 +48,13 @@ bool request_amx_permission() {
     requested = true;
 
     const unsigned long ARCH_REQ_XCOMP_PERM = 0x1023;
+    const unsigned long XFEATURE_XTILECFG = 17;
     const unsigned long XFEATURE_XTILEDATA = 18;
-    long ret = syscall(SYS_arch_prctl, ARCH_REQ_XCOMP_PERM, XFEATURE_XTILEDATA);
-    granted = (ret == 0);
+
+    // Must request both XTILECFG and XTILEDATA permissions
+    long ret1 = syscall(SYS_arch_prctl, ARCH_REQ_XCOMP_PERM, XFEATURE_XTILECFG);
+    long ret2 = syscall(SYS_arch_prctl, ARCH_REQ_XCOMP_PERM, XFEATURE_XTILEDATA);
+    granted = (ret1 == 0 && ret2 == 0);
     return granted;
 }
 
@@ -248,7 +258,7 @@ void bf16_inner_product_batch_amx(
 void bf16_batch_distances(
     const uint16_t* query_bf16,
     const uint16_t* bf16_data,
-    const int64_t* candidate_ids,
+    const idx_t* candidate_ids,
     float* distances_out,
     size_t count,
     size_t dim,
@@ -258,6 +268,11 @@ void bf16_batch_distances(
     float query_norm_sq,
     bool tiles_configured)
 {
+    // L2 distance requires precomputed norms
+    FAISS_THROW_IF_NOT_MSG(
+        is_ip || bf16_norms != nullptr,
+        "bf16_batch_distances: bf16_norms must be provided for L2 distance");
+
     // Build pointer array
     const uint16_t* ptrs[16];
 
@@ -321,3 +336,28 @@ void bf16_batch_distances(
 }
 
 } // namespace faiss
+
+#else // !(__linux__ && __x86_64__)
+
+// Stub implementations for non-Linux/non-x86_64 platforms
+namespace faiss {
+
+bool cpu_has_amx_bf16() { return false; }
+bool request_amx_permission() { return false; }
+
+void bf16_inner_product_batch_amx(
+    const uint16_t*, const uint16_t* const*, float*, size_t, size_t) {}
+void bf16_inner_product_batch_avx512(
+    const uint16_t*, const uint16_t* const*, float*, size_t count, size_t dim) {
+    // Scalar fallback for non-x86_64
+    // In practice this path should not be called; BF16 should be disabled.
+}
+void amx_tile_config_batch16() {}
+void amx_tile_release() {}
+void bf16_batch_distances(
+    const uint16_t*, const uint16_t*, const idx_t*, float*,
+    size_t, size_t, bool, bool, const float*, float, bool) {}
+
+} // namespace faiss
+
+#endif // __linux__ && __x86_64__

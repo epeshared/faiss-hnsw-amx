@@ -4,6 +4,9 @@
  *
  * BF16 + AMX accelerated distance computation for HNSW search.
  * Ported from hnswlib-amx project.
+ *
+ * Platform: requires Linux x86_64 with AMX/AVX512-BF16 support.
+ * On other platforms, all functions return safe defaults (false/fallback).
  */
 
 #pragma once
@@ -12,6 +15,7 @@
 #include <cstddef>
 #include <cstring>
 #include <vector>
+#include <faiss/MetricType.h>
 
 namespace faiss {
 
@@ -22,15 +26,19 @@ namespace faiss {
 /// Check if CPU supports AMX-BF16 instructions
 bool cpu_has_amx_bf16();
 
-/// Request AMX tile permission from Linux kernel (must call once per process)
+/// Request AMX tile permission from Linux kernel (XTILECFG + XTILEDATA).
+/// Returns true if permission granted, false otherwise.
+/// Must call once per process before using AMX tiles.
 bool request_amx_permission();
 
-/// Convert FP32 array to BF16 (truncation, no rounding)
+/// Convert FP32 array to BF16 (round-to-nearest-even)
 inline void float_to_bf16(const float* src, uint16_t* dst, size_t n) {
     for (size_t i = 0; i < n; i++) {
         uint32_t bits;
         memcpy(&bits, &src[i], sizeof(bits));
-        dst[i] = static_cast<uint16_t>(bits >> 16);
+        // Round-to-nearest-even: add 0x7FFF + lsb of result
+        uint32_t rounding_bias = ((bits >> 16) & 1) + 0x7FFF;
+        dst[i] = static_cast<uint16_t>((bits + rounding_bias) >> 16);
     }
 }
 
@@ -92,7 +100,7 @@ void bf16_inner_product_batch_avx512(
 // ============================================================
 
 /// AMX tile config structure — must be 64-byte aligned
-struct __attribute__((aligned(64))) AmxTileConfig {
+struct alignas(64) AmxTileConfig {
     uint8_t palette_id;
     uint8_t start_row;
     uint8_t reserved[14];
@@ -127,7 +135,7 @@ void amx_tile_release();
 void bf16_batch_distances(
     const uint16_t* query_bf16,
     const uint16_t* bf16_data,
-    const int64_t* candidate_ids,
+    const idx_t* candidate_ids,
     float* distances_out,
     size_t count,
     size_t dim,

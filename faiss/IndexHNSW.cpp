@@ -274,9 +274,13 @@ void hnsw_search(
     idx_t check_period = InterruptCallback::get_period_hint(
             hnsw.max_level * index->d * efSearch);
 
-    // BF16 acceleration path
+    // BF16 acceleration path — only for L2 and IP metrics
     const bool bf16_enabled = index->use_bf16_search &&
-            !index->bf16_storage.empty();
+            !index->bf16_storage.empty() &&
+            (index->bf16_storage.size() ==
+                    (size_t)index->ntotal * index->d) &&
+            (index->metric_type == METRIC_L2 ||
+                    index->metric_type == METRIC_INNER_PRODUCT);
 
     for (idx_t i0 = 0; i0 < n; i0 += check_period) {
         idx_t i1 = std::min(i0 + check_period, n);
@@ -343,6 +347,8 @@ void hnsw_search(
                     for (int level = hnsw.max_level; level >= 1; level--) {
                         HNSWStats local_stats = greedy_update_nearest(
                                 hnsw, *dis, level, nearest, d_nearest);
+                        ndis += local_stats.ndis;
+                        nhops += local_stats.nhops;
                     }
 
                     // Level 0: use BF16 batch-16 search
@@ -371,8 +377,6 @@ void hnsw_search(
                             index->d,
                             is_ip,
                             index->use_amx);
-
-                    vt.advance();
 
                     n1 += search_stats.n1;
                     n2 += search_stats.n2;
@@ -460,6 +464,11 @@ void IndexHNSW::add(idx_t n, const float* x) {
     storage->add(n, x);
     ntotal = storage->ntotal;
 
+    // Invalidate BF16 cache — must rebuild after adding vectors
+    bf16_storage.clear();
+    bf16_norms.clear();
+    use_bf16_search = false;
+
     hnsw_add_vertices(
             *this,
             n0,
@@ -474,6 +483,12 @@ void IndexHNSW::reset() {
     locks.clear();
     storage->reset();
     ntotal = 0;
+
+    // Clear BF16 state
+    bf16_storage.clear();
+    bf16_norms.clear();
+    use_bf16_search = false;
+    use_amx = false;
 }
 
 void IndexHNSW::reconstruct(idx_t key, float* recons) const {
@@ -1314,7 +1329,7 @@ void IndexHNSW::build_bf16_storage() {
     // Allocate BF16 storage: n vectors × dim BF16 values
     bf16_storage.resize(n * dim);
 
-    // Convert FP32 → BF16 (truncation: drop lower 16 bits of mantissa)
+    // Convert FP32 → BF16 (round-to-nearest-even)
     for (idx_t i = 0; i < n * dim; i++) {
         uint32_t fp32_bits;
         memcpy(&fp32_bits, &xb[i], sizeof(uint32_t));
@@ -1336,11 +1351,8 @@ void IndexHNSW::build_bf16_storage() {
         }
     }
 
-    // Detect AMX support at runtime
-    use_amx = cpu_has_amx_bf16();
-    if (use_amx) {
-        request_amx_permission();
-    }
+    // Detect AMX support at runtime and request permission
+    use_amx = cpu_has_amx_bf16() && request_amx_permission();
     use_bf16_search = true;
 }
 
