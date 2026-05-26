@@ -608,6 +608,8 @@
         </childnode>
         <childnode refid="154" relation="include">
         </childnode>
+        <childnode refid="155" relation="include">
+        </childnode>
         <childnode refid="145" relation="include">
         </childnode>
         <childnode refid="116" relation="include">
@@ -643,7 +645,7 @@
         <label>faiss/gpu/GpuDistance.h</label>
         <link refid="GpuDistance_8h_source"/>
       </node>
-      <node id="155">
+      <node id="156">
         <label>faiss/gpu/GpuFaissAssert.h</label>
         <link refid="GpuFaissAssert_8h_source"/>
       </node>
@@ -709,23 +711,23 @@
         <label>faiss/gpu/GpuIndexIVFScalarQuantizer.h</label>
         <link refid="GpuIndexIVFScalarQuantizer_8h_source"/>
       </node>
-      <node id="156">
+      <node id="157">
         <label>faiss/gpu/GpuResources.h</label>
         <link refid="GpuResources_8h_source"/>
         <childnode refid="94" relation="include">
         </childnode>
         <childnode refid="67" relation="include">
         </childnode>
-        <childnode refid="157" relation="include">
+        <childnode refid="158" relation="include">
         </childnode>
         <childnode refid="143" relation="include">
         </childnode>
         <childnode refid="125" relation="include">
         </childnode>
-        <childnode refid="158" relation="include">
+        <childnode refid="159" relation="include">
         </childnode>
       </node>
-      <node id="157">
+      <node id="158">
         <label>faiss/gpu/StandardGpuResources.h</label>
         <link refid="StandardGpuResources_8h_source"/>
         <childnode refid="73" relation="include">
@@ -739,7 +741,7 @@
         <label>faiss/gpu/impl/RemapIndices.h</label>
         <link refid="RemapIndices_8h_source"/>
       </node>
-      <node id="159">
+      <node id="160">
         <label>faiss/gpu/perf/IndexWrapper-inl.h</label>
         <link refid="IndexWrapper-inl_8h_source"/>
         <childnode refid="73" relation="include">
@@ -761,16 +763,16 @@
         <label>faiss/gpu/utils/CuvsUtils.h</label>
         <link refid="CuvsUtils_8h_source"/>
       </node>
-      <node id="160">
+      <node id="161">
         <label>faiss/gpu/utils/DeviceUtils.h</label>
         <link refid="DeviceUtils_8h_source"/>
-        <childnode refid="157" relation="include">
+        <childnode refid="158" relation="include">
         </childnode>
       </node>
-      <node id="158">
+      <node id="159">
         <label>faiss/gpu/utils/StackDeviceMemory.h</label>
         <link refid="StackDeviceMemory_8h_source"/>
-        <childnode refid="157" relation="include">
+        <childnode refid="158" relation="include">
         </childnode>
       </node>
       <node id="102">
@@ -874,15 +876,15 @@
         </childnode>
         <childnode refid="124" relation="include">
         </childnode>
-        <childnode refid="155" relation="include">
-        </childnode>
         <childnode refid="156" relation="include">
         </childnode>
-        <childnode refid="159" relation="include">
+        <childnode refid="157" relation="include">
+        </childnode>
+        <childnode refid="160" relation="include">
         </childnode>
         <childnode refid="98" relation="include">
         </childnode>
-        <childnode refid="160" relation="include">
+        <childnode refid="161" relation="include">
         </childnode>
         <childnode refid="104" relation="include">
         </childnode>
@@ -892,9 +894,9 @@
         </childnode>
         <childnode refid="128" relation="include">
         </childnode>
-        <childnode refid="161" relation="include">
-        </childnode>
         <childnode refid="162" relation="include">
+        </childnode>
+        <childnode refid="163" relation="include">
         </childnode>
         <childnode refid="9" relation="include">
         </childnode>
@@ -908,9 +910,9 @@
         </childnode>
         <childnode refid="129" relation="include">
         </childnode>
-        <childnode refid="165" relation="include">
-        </childnode>
         <childnode refid="166" relation="include">
+        </childnode>
+        <childnode refid="167" relation="include">
         </childnode>
         <childnode refid="25" relation="include">
         </childnode>
@@ -920,9 +922,9 @@
         </childnode>
         <childnode refid="40" relation="include">
         </childnode>
-        <childnode refid="169" relation="include">
+        <childnode refid="170" relation="include">
         </childnode>
-        <childnode refid="171" relation="include">
+        <childnode refid="172" relation="include">
         </childnode>
         <childnode refid="116" relation="include">
         </childnode>
@@ -932,11 +934,11 @@
         </childnode>
         <childnode refid="151" relation="include">
         </childnode>
-        <childnode refid="172" relation="include">
+        <childnode refid="173" relation="include">
         </childnode>
         <childnode refid="138" relation="include">
         </childnode>
-        <childnode refid="173" relation="include">
+        <childnode refid="174" relation="include">
         </childnode>
       </node>
       <node id="104">
@@ -1125,7 +1127,7 @@
         <childnode refid="111" relation="include">
         </childnode>
       </node>
-      <node id="161">
+      <node id="162">
         <label>faiss/impl/ThreadedIndex-inl.h</label>
         <link refid="ThreadedIndex-inl_8h_source"/>
         <childnode refid="75" relation="include">
@@ -1139,29 +1141,33 @@
         <childnode refid="74" relation="include">
         </childnode>
       </node>
-      <node id="163">
+      <node id="164">
         <label>faiss/impl/approx_topk/approx_topk.h</label>
         <link refid="approx__topk_8h_source"/>
         <childnode refid="63" relation="include">
         </childnode>
         <childnode refid="58" relation="include">
         </childnode>
-        <childnode refid="164" relation="include">
+        <childnode refid="165" relation="include">
         </childnode>
         <childnode refid="115" relation="include">
         </childnode>
         <childnode refid="152" relation="include">
         </childnode>
       </node>
-      <node id="162">
+      <node id="163">
         <label>faiss/impl/approx_topk/generic.h</label>
         <link refid="generic_8h_source"/>
-        <childnode refid="163" relation="include">
+        <childnode refid="164" relation="include">
         </childnode>
       </node>
-      <node id="164">
+      <node id="165">
         <label>faiss/impl/approx_topk/simdlib256-inl.h</label>
         <link refid="simdlib256-inl_8h_source"/>
+      </node>
+      <node id="155">
+        <label>faiss/impl/bf16_distance_amx.h</label>
+        <link refid="bf16__distance__amx_8h_source"/>
       </node>
       <node id="68">
         <label>faiss/impl/binary_hamming/IndexBinaryHNSW_impl.h</label>
@@ -1239,7 +1245,7 @@
         <childnode refid="133" relation="include">
         </childnode>
       </node>
-      <node id="165">
+      <node id="166">
         <label>faiss/impl/hnsw/LockVector.h</label>
         <link refid="LockVector_8h_source"/>
         <childnode refid="64" relation="include">
@@ -1251,7 +1257,7 @@
         <label>faiss/impl/index_read_utils.h</label>
         <link refid="index__read__utils_8h_source"/>
       </node>
-      <node id="167">
+      <node id="168">
         <label>faiss/impl/io_macros.h</label>
         <link refid="io__macros_8h_source"/>
       </node>
@@ -1259,11 +1265,11 @@
         <label>faiss/impl/kmeans1d.h</label>
         <link refid="kmeans1d_8h_source"/>
       </node>
-      <node id="168">
+      <node id="169">
         <label>faiss/impl/mapped_io.h</label>
         <link refid="mapped__io_8h_source"/>
       </node>
-      <node id="166">
+      <node id="167">
         <label>faiss/impl/maybe_owned_vector.h</label>
         <link refid="maybe__owned__vector_8h_source"/>
         <childnode refid="63" relation="include">
@@ -1272,9 +1278,9 @@
         </childnode>
         <childnode refid="104" relation="include">
         </childnode>
-        <childnode refid="167" relation="include">
-        </childnode>
         <childnode refid="168" relation="include">
+        </childnode>
+        <childnode refid="169" relation="include">
         </childnode>
         <childnode refid="145" relation="include">
         </childnode>
@@ -1369,10 +1375,10 @@
         <label>faiss/impl/scalar_quantizer/training.h</label>
         <link refid="training_8h_source"/>
       </node>
-      <node id="169">
+      <node id="170">
         <label>faiss/impl/simd_dispatch.h</label>
         <link refid="simd__dispatch_8h"/>
-        <childnode refid="163" relation="include">
+        <childnode refid="164" relation="include">
         </childnode>
         <childnode refid="24" relation="include">
         </childnode>
@@ -1382,10 +1388,10 @@
         </childnode>
         <childnode refid="150" relation="include">
         </childnode>
-        <childnode refid="170" relation="include">
+        <childnode refid="171" relation="include">
         </childnode>
       </node>
-      <node id="171">
+      <node id="172">
         <label>faiss/impl/simdlib/simdlib_neon.h</label>
         <link refid="simdlib__neon_8h_source"/>
       </node>
@@ -1547,7 +1553,7 @@
         <label>faiss/utils/simd_impl/distances_autovec-inl.h</label>
         <link refid="distances__autovec-inl_8h_source"/>
       </node>
-      <node id="172">
+      <node id="173">
         <label>faiss/utils/simd_impl/distances_simdlib256.h</label>
         <link refid="distances__simdlib256_8h_source"/>
       </node>
@@ -1559,11 +1565,11 @@
         <label>faiss/utils/simd_impl/hamming_impl.h</label>
         <link refid="simd__impl_2hamming__impl_8h_source"/>
       </node>
-      <node id="173">
+      <node id="174">
         <label>faiss/utils/simd_impl/partitioning_simdlib256.h</label>
         <link refid="partitioning__simdlib256_8h"/>
       </node>
-      <node id="170">
+      <node id="171">
         <label>faiss/utils/simd_impl/super_kmeans_dispatch.h</label>
         <link refid="super__kmeans__dispatch_8h_source"/>
       </node>

@@ -1,0 +1,267 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.8" xml:lang="en-US">
+  <compounddef id="bf16__distance__amx_8h" kind="file" language="C++">
+    <compoundname>bf16_distance_amx.h</compoundname>
+    <includes local="no">cstdint</includes>
+    <includes local="no">cstddef</includes>
+    <includes local="no">cstring</includes>
+    <includes local="no">vector</includes>
+    <includes refid="MetricType_8h" local="no">faiss/MetricType.h</includes>
+    <incdepgraph>
+      <node id="6">
+        <label>faiss/MetricType.h</label>
+        <link refid="MetricType_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>faiss/impl/FaissAssert.h</label>
+        <link refid="FaissAssert_8h_source"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>faiss/impl/FaissException.h</label>
+        <link refid="FaissException_8h_source"/>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>faiss/impl/bf16_distance_amx.h</label>
+        <link refid="bf16__distance__amx_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>faiss/impl/platform_macros.h</label>
+        <link refid="platform__macros_8h_source"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>cinttypes</label>
+      </node>
+      <node id="3">
+        <label>cstddef</label>
+      </node>
+      <node id="2">
+        <label>cstdint</label>
+      </node>
+      <node id="7">
+        <label>cstdio</label>
+      </node>
+      <node id="8">
+        <label>cstdlib</label>
+      </node>
+      <node id="4">
+        <label>cstring</label>
+      </node>
+      <node id="11">
+        <label>exception</label>
+      </node>
+      <node id="16">
+        <label>limits</label>
+      </node>
+      <node id="12">
+        <label>string</label>
+      </node>
+      <node id="13">
+        <label>utility</label>
+      </node>
+      <node id="5">
+        <label>vector</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="structfaiss_1_1AmxTileConfig" prot="public">faiss::AmxTileConfig</innerclass>
+    <innernamespace refid="namespacefaiss">faiss</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/**</highlight></codeline>
+<codeline lineno="2"><highlight class="comment"><sp/>*<sp/>Copyright<sp/>OpenSearch<sp/>Contributors</highlight></codeline>
+<codeline lineno="3"><highlight class="comment"><sp/>*<sp/>SPDX-License-Identifier:<sp/>Apache-2.0</highlight></codeline>
+<codeline lineno="4"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="5"><highlight class="comment"><sp/>*<sp/>BF16<sp/>+<sp/>AMX<sp/>accelerated<sp/>distance<sp/>computation<sp/>for<sp/>HNSW<sp/>search.</highlight></codeline>
+<codeline lineno="6"><highlight class="comment"><sp/>*<sp/>Ported<sp/>from<sp/>hnswlib-amx<sp/>project.</highlight></codeline>
+<codeline lineno="7"><highlight class="comment"><sp/>*</highlight></codeline>
+<codeline lineno="8"><highlight class="comment"><sp/>*<sp/>Platform:<sp/>requires<sp/>Linux<sp/>x86_64<sp/>with<sp/>AMX/AVX512-BF16<sp/>support.</highlight></codeline>
+<codeline lineno="9"><highlight class="comment"><sp/>*<sp/>On<sp/>other<sp/>platforms,<sp/>all<sp/>functions<sp/>return<sp/>safe<sp/>defaults<sp/>(false/fallback).</highlight></codeline>
+<codeline lineno="10"><highlight class="comment"><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#pragma<sp/>once</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cstdint&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cstddef&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cstring&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;faiss/MetricType.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacefaiss" kindref="compound">faiss</ref><sp/>{</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Utility<sp/>functions</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="26"><highlight class="comment">///<sp/>Check<sp/>if<sp/>CPU<sp/>supports<sp/>AMX-BF16<sp/>instructions</highlight></codeline>
+<codeline lineno="27" refid="namespacefaiss_1aacc69782bd6b22b47947412bd9dde851" refkind="member"><highlight class="comment"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="namespacefaiss_1aacc69782bd6b22b47947412bd9dde851" kindref="member">cpu_has_amx_bf16</ref>();</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="29"><highlight class="comment">///<sp/>Request<sp/>AMX<sp/>tile<sp/>permission<sp/>from<sp/>Linux<sp/>kernel<sp/>(XTILECFG<sp/>+<sp/>XTILEDATA).</highlight></codeline>
+<codeline lineno="30"><highlight class="comment">///<sp/>Returns<sp/>true<sp/>if<sp/>permission<sp/>granted,<sp/>false<sp/>otherwise.</highlight></codeline>
+<codeline lineno="31"><highlight class="comment">///<sp/>Must<sp/>call<sp/>once<sp/>per<sp/>process<sp/>before<sp/>using<sp/>AMX<sp/>tiles.</highlight></codeline>
+<codeline lineno="32" refid="namespacefaiss_1a74eb559a3c2f7049f5ae5189f5b52239" refkind="member"><highlight class="comment"></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="namespacefaiss_1a74eb559a3c2f7049f5ae5189f5b52239" kindref="member">request_amx_permission</ref>();</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="34"><highlight class="comment">///<sp/>Convert<sp/>FP32<sp/>array<sp/>to<sp/>BF16<sp/>(round-to-nearest-even)</highlight></codeline>
+<codeline lineno="35" refid="namespacefaiss_1ad5845cfef99bae1ca2577f8a383eb8ee" refkind="member"><highlight class="comment"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacefaiss_1ad5845cfef99bae1ca2577f8a383eb8ee" kindref="member">float_to_bf16</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">*<sp/>src,<sp/>uint16_t*<sp/>dst,<sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>n)<sp/>{</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;<sp/>n;<sp/>i++)<sp/>{</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/>bits;</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>memcpy(&amp;bits,<sp/>&amp;src[i],<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(bits));</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Round-to-nearest-even:<sp/>add<sp/>0x7FFF<sp/>+<sp/>lsb<sp/>of<sp/>result</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/>rounding_bias<sp/>=<sp/>((bits<sp/>&gt;&gt;<sp/>16)<sp/>&amp;<sp/>1)<sp/>+<sp/>0x7FFF;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>dst[i]<sp/>=<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="normal">uint16_t</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">((bits<sp/>+<sp/>rounding_bias)<sp/>&gt;&gt;<sp/>16);</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="43"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="45"><highlight class="comment">///<sp/>Convert<sp/>single<sp/>BF16<sp/>to<sp/>FP32</highlight></codeline>
+<codeline lineno="46" refid="namespacefaiss_1a56d36ab754b2821abc47fe88f24e77e1" refkind="member"><highlight class="comment"></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="namespacefaiss_1a56d36ab754b2821abc47fe88f24e77e1" kindref="member">bf16_to_float</ref>(uint16_t<sp/>value)<sp/>{</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/>uint32_t<sp/>bits<sp/>=<sp/></highlight><highlight class="keyword">static_cast&lt;</highlight><highlight class="normal">uint32_t</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(value)<sp/>&lt;&lt;<sp/>16;</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>result;</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/>memcpy(&amp;result,<sp/>&amp;bits,<sp/></highlight><highlight class="keyword">sizeof</highlight><highlight class="normal">(result));</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal"><sp/>result;</highlight></codeline>
+<codeline lineno="51"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Distance<sp/>computation<sp/>kernels</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="57"><highlight class="comment">///<sp/>AVX512-BF16<sp/>single-pair<sp/>inner<sp/>product<sp/>(1<sp/>query<sp/>×<sp/>1<sp/>candidate)</highlight></codeline>
+<codeline lineno="58"><highlight class="comment">///<sp/>Returns<sp/>raw<sp/>dot<sp/>product<sp/>(not<sp/>negated,<sp/>not<sp/>1-dot)</highlight></codeline>
+<codeline lineno="59" refid="namespacefaiss_1ab83d54d3a13d6a4c142c754dd80d71c7" refkind="member"><highlight class="comment"></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="namespacefaiss_1ab83d54d3a13d6a4c142c754dd80d71c7" kindref="member">bf16_inner_product_avx512</ref>(</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint16_t*<sp/>query_bf16,</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint16_t*<sp/>candidate_bf16,</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>dim);</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="64"><highlight class="comment">///<sp/>Scalar<sp/>fallback<sp/>for<sp/>BF16<sp/>inner<sp/>product</highlight></codeline>
+<codeline lineno="65" refid="namespacefaiss_1a747aee26dc95ca0f4eef85e847fa6364" refkind="member"><highlight class="comment"></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/><ref refid="namespacefaiss_1a747aee26dc95ca0f4eef85e847fa6364" kindref="member">bf16_inner_product_scalar</ref>(</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint16_t*<sp/>query_bf16,</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint16_t*<sp/>candidate_bf16,</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>dim);</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="70"><highlight class="comment">///<sp/>AMX<sp/>BF16<sp/>batch<sp/>inner<sp/>product:<sp/>1<sp/>query<sp/>×<sp/>up<sp/>to<sp/>16<sp/>candidates</highlight></codeline>
+<codeline lineno="71"><highlight class="comment">///</highlight></codeline>
+<codeline lineno="72"><highlight class="comment">///<sp/>Uses<sp/>swapped-tile<sp/>layout<sp/>to<sp/>avoid<sp/>vnni<sp/>repacking:</highlight></codeline>
+<codeline lineno="73"><highlight class="comment">///<sp/><sp/><sp/>Tile<sp/>A<sp/>(src1):<sp/>count<sp/>rows<sp/>×<sp/>64<sp/>bytes<sp/>=<sp/>candidates&apos;<sp/>32<sp/>BF16<sp/>elements</highlight></codeline>
+<codeline lineno="74"><highlight class="comment">///<sp/><sp/><sp/>Tile<sp/>B<sp/>(src2):<sp/>16<sp/>rows<sp/>×<sp/>4<sp/>bytes<sp/>=<sp/>query&apos;s<sp/>32<sp/>BF16<sp/>as<sp/>pairs</highlight></codeline>
+<codeline lineno="75"><highlight class="comment">///<sp/><sp/><sp/>Tile<sp/>C<sp/>(dst):<sp/><sp/>count<sp/>rows<sp/>×<sp/>4<sp/>bytes<sp/>=<sp/>FP32<sp/>dot-product<sp/>accumulators</highlight></codeline>
+<codeline lineno="76"><highlight class="comment">///</highlight></codeline>
+<codeline lineno="77"><highlight class="comment">///<sp/>@param<sp/>query_bf16<sp/><sp/><sp/><sp/><sp/><sp/><sp/>[dim]<sp/>BF16<sp/>query<sp/>vector</highlight></codeline>
+<codeline lineno="78"><highlight class="comment">///<sp/>@param<sp/>candidate_ptrs<sp/><sp/><sp/>array<sp/>of<sp/>count<sp/>pointers<sp/>to<sp/>BF16<sp/>vectors</highlight></codeline>
+<codeline lineno="79"><highlight class="comment">///<sp/>@param<sp/>dots_out<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>[count]<sp/>output<sp/>raw<sp/>dot<sp/>products<sp/>(FP32)</highlight></codeline>
+<codeline lineno="80"><highlight class="comment">///<sp/>@param<sp/>count<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>number<sp/>of<sp/>candidates<sp/>(1-16)</highlight></codeline>
+<codeline lineno="81"><highlight class="comment">///<sp/>@param<sp/>dim<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector<sp/>dimension<sp/>(best<sp/>if<sp/>multiple<sp/>of<sp/>32)</highlight></codeline>
+<codeline lineno="82" refid="namespacefaiss_1a4d61f40f598437b7d390edfea7b9c53f" refkind="member"><highlight class="comment"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacefaiss_1a4d61f40f598437b7d390edfea7b9c53f" kindref="member">bf16_inner_product_batch_amx</ref>(</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint16_t*<sp/>query_bf16,</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint16_t*<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/>candidate_ptrs,</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">*<sp/>dots_out,</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>count,</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>dim);</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="89"><highlight class="comment">///<sp/>Batch<sp/>inner<sp/>product<sp/>using<sp/>AVX512-BF16<sp/>(fallback<sp/>when<sp/>AMX<sp/>unavailable)</highlight></codeline>
+<codeline lineno="90"><highlight class="comment">///<sp/>Same<sp/>interface<sp/>as<sp/>AMX<sp/>version</highlight></codeline>
+<codeline lineno="91" refid="namespacefaiss_1a883ca5e20b8b35fa4427672bab6e9990" refkind="member"><highlight class="comment"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacefaiss_1a883ca5e20b8b35fa4427672bab6e9990" kindref="member">bf16_inner_product_batch_avx512</ref>(</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint16_t*<sp/>query_bf16,</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint16_t*<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal">*<sp/>candidate_ptrs,</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">*<sp/>dots_out,</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>count,</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>dim);</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight><highlight class="comment">//<sp/>AMX<sp/>tile<sp/>management</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="102"><highlight class="comment">///<sp/>AMX<sp/>tile<sp/>config<sp/>structure<sp/>—<sp/>must<sp/>be<sp/>64-byte<sp/>aligned</highlight></codeline>
+<codeline lineno="103" refid="structfaiss_1_1AmxTileConfig" refkind="compound"><highlight class="comment"></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="keyword">alignas</highlight><highlight class="normal">(64)<sp/><ref refid="structfaiss_1_1AmxTileConfig" kindref="compound">AmxTileConfig</ref><sp/>{</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>palette_id;</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>start_row;</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>reserved[14];</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/>uint16_t<sp/>colsb[16];</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/>uint8_t<sp/>rows[16];</highlight></codeline>
+<codeline lineno="109"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="111"><highlight class="comment">///<sp/>Configure<sp/>AMX<sp/>tiles<sp/>for<sp/>batch-16<sp/>inner<sp/>product<sp/>computation.</highlight></codeline>
+<codeline lineno="112"><highlight class="comment">///<sp/>Call<sp/>once<sp/>before<sp/>a<sp/>series<sp/>of<sp/>bf16_inner_product_batch_amx()<sp/>calls.</highlight></codeline>
+<codeline lineno="113" refid="namespacefaiss_1a22dce0950fd61efe6f8c49ddf522807a" refkind="member"><highlight class="comment"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacefaiss_1a22dce0950fd61efe6f8c49ddf522807a" kindref="member">amx_tile_config_batch16</ref>();</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="115"><highlight class="comment">///<sp/>Release<sp/>AMX<sp/>tile<sp/>state.<sp/>Call<sp/>after<sp/>batch<sp/>computation<sp/>is<sp/>done.</highlight></codeline>
+<codeline lineno="116" refid="namespacefaiss_1adcc5aab213549920f24698a94896fa76" refkind="member"><highlight class="comment"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacefaiss_1adcc5aab213549920f24698a94896fa76" kindref="member">amx_tile_release</ref>();</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight></codeline>
+<codeline lineno="118"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="119"><highlight class="normal"></highlight><highlight class="comment">//<sp/>High-level<sp/>batch<sp/>distance<sp/>(ID-based,<sp/>like<sp/>hnswlib&apos;s<sp/>computeBf16BatchDistancesInto)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight><highlight class="comment">//<sp/>============================================================</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight><highlight class="comment"></highlight></codeline>
+<codeline lineno="122"><highlight class="comment">///<sp/>Compute<sp/>distances<sp/>for<sp/>a<sp/>batch<sp/>of<sp/>candidate<sp/>IDs<sp/>from<sp/>contiguous<sp/>BF16<sp/>storage.</highlight></codeline>
+<codeline lineno="123"><highlight class="comment">///</highlight></codeline>
+<codeline lineno="124"><highlight class="comment">///<sp/>@param<sp/>query_bf16<sp/><sp/><sp/><sp/>[dim]<sp/>BF16<sp/>query</highlight></codeline>
+<codeline lineno="125"><highlight class="comment">///<sp/>@param<sp/>bf16_data<sp/><sp/><sp/><sp/><sp/>[N<sp/>×<sp/>dim]<sp/>contiguous<sp/>BF16<sp/>vector<sp/>storage</highlight></codeline>
+<codeline lineno="126"><highlight class="comment">///<sp/>@param<sp/>candidate_ids<sp/>[count]<sp/>candidate<sp/>internal<sp/>IDs</highlight></codeline>
+<codeline lineno="127"><highlight class="comment">///<sp/>@param<sp/>distances_out<sp/>[count]<sp/>output<sp/>distances</highlight></codeline>
+<codeline lineno="128"><highlight class="comment">///<sp/>@param<sp/>count<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>number<sp/>of<sp/>candidates</highlight></codeline>
+<codeline lineno="129"><highlight class="comment">///<sp/>@param<sp/>dim<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>vector<sp/>dimension</highlight></codeline>
+<codeline lineno="130"><highlight class="comment">///<sp/>@param<sp/>use_amx<sp/><sp/><sp/><sp/><sp/><sp/><sp/>whether<sp/>to<sp/>use<sp/>AMX<sp/>(else<sp/>AVX512)</highlight></codeline>
+<codeline lineno="131"><highlight class="comment">///<sp/>@param<sp/>is_ip<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>true=inner<sp/>product,<sp/>false=L2</highlight></codeline>
+<codeline lineno="132"><highlight class="comment">///<sp/>@param<sp/>bf16_norms<sp/><sp/><sp/><sp/>[N]<sp/>precomputed<sp/>||x||²<sp/>(needed<sp/>for<sp/>L2,<sp/>can<sp/>be<sp/>nullptr<sp/>for<sp/>IP)</highlight></codeline>
+<codeline lineno="133"><highlight class="comment">///<sp/>@param<sp/>query_norm_sq<sp/>||query||²<sp/>(needed<sp/>for<sp/>L2)</highlight></codeline>
+<codeline lineno="134"><highlight class="comment">///<sp/>@param<sp/>tiles_configured<sp/><sp/>if<sp/>true,<sp/>caller<sp/>has<sp/>already<sp/>configured<sp/>AMX<sp/>tiles<sp/>(skip<sp/>config/release)</highlight></codeline>
+<codeline lineno="135" refid="namespacefaiss_1a287d6a09f482cf6b73528e01b28b36db" refkind="member"><highlight class="comment"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacefaiss_1a287d6a09f482cf6b73528e01b28b36db" kindref="member">bf16_batch_distances</ref>(</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint16_t*<sp/>query_bf16,</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint16_t*<sp/>bf16_data,</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><ref refid="namespacefaiss_1ad95f6ecce1dcddede15df19a5b17adf6" kindref="member">idx_t</ref>*<sp/>candidate_ids,</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">*<sp/>distances_out,</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>count,</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">size_t</highlight><highlight class="normal"><sp/>dim,</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>use_amx,</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>is_ip,</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal">*<sp/>bf16_norms<sp/>=<sp/></highlight><highlight class="keyword">nullptr</highlight><highlight class="normal">,</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>query_norm_sq<sp/>=<sp/>0.0f,</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>tiles_configured<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="147"><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal">}<sp/></highlight><highlight class="comment">//<sp/>namespace<sp/>faiss</highlight><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="faiss/impl/bf16_distance_amx.h"/>
+  </compounddef>
+</doxygen>

@@ -16,6 +16,7 @@
     <includedby refid="RaBitQUtils_8h" local="no">faiss/impl/RaBitQUtils.h</includedby>
     <includedby refid="RaBitQuantizer_8h" local="no">faiss/impl/RaBitQuantizer.h</includedby>
     <includedby refid="RaBitQuantizerMultiBit_8h" local="no">faiss/impl/RaBitQuantizerMultiBit.h</includedby>
+    <includedby refid="bf16__distance__amx_8h" local="no">faiss/impl/bf16_distance_amx.h</includedby>
     <includedby refid="InvertedLists_8h" local="no">faiss/invlists/InvertedLists.h</includedby>
     <includedby refid="IndexSVSFaissUtils_8h" local="no">faiss/svs/IndexSVSFaissUtils.h</includedby>
     <includedby refid="extra__distances_8h" local="no">faiss/utils/extra_distances.h</includedby>
@@ -596,6 +597,8 @@
         </childnode>
         <childnode refid="153" relation="include">
         </childnode>
+        <childnode refid="154" relation="include">
+        </childnode>
         <childnode refid="144" relation="include">
         </childnode>
         <childnode refid="116" relation="include">
@@ -1004,6 +1007,10 @@
         </childnode>
         <childnode refid="74" relation="include">
         </childnode>
+      </node>
+      <node id="154">
+        <label>faiss/impl/bf16_distance_amx.h</label>
+        <link refid="bf16__distance__amx_8h_source"/>
       </node>
       <node id="68">
         <label>faiss/impl/binary_hamming/IndexBinaryHNSW_impl.h</label>

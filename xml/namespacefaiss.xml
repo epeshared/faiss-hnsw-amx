@@ -6,6 +6,7 @@
     <innerclass refid="structfaiss_1_1AdditiveQuantizer" prot="public">faiss::AdditiveQuantizer</innerclass>
     <innerclass refid="structfaiss_1_1AlignedTable" prot="public">faiss::AlignedTable</innerclass>
     <innerclass refid="structfaiss_1_1AlignedTableTightAlloc" prot="public">faiss::AlignedTableTightAlloc</innerclass>
+    <innerclass refid="structfaiss_1_1AmxTileConfig" prot="public">faiss::AmxTileConfig</innerclass>
     <innerclass refid="structfaiss_1_1ArrayInvertedLists" prot="public">faiss::ArrayInvertedLists</innerclass>
     <innerclass refid="structfaiss_1_1ArrayInvertedListsPanorama" prot="public">faiss::ArrayInvertedListsPanorama</innerclass>
     <innerclass refid="structfaiss_1_1AutoTuneCriterion" prot="public">faiss::AutoTuneCriterion</innerclass>
@@ -1261,34 +1262,6 @@
         </inbodydescription>
         <location file="faiss/impl/binary_hamming/dispatch.h" line="30" column="1" bodyfile="faiss/impl/binary_hamming/dispatch.h" bodystart="30" bodyend="-1"/>
       </memberdef>
-      <memberdef kind="typedef" id="namespacefaiss_1a728ebc1898262f333334247c4aa3db35" prot="public" static="no">
-        <type><ref refid="structfaiss_1_1simd16uint16__tpl" kindref="compound">simd16uint16_tpl</ref>&lt; <ref refid="namespacefaiss_1aca360ba1cc6270b79a9228cdf3e63df5" kindref="member">SINGLE_SIMD_LEVEL_256</ref> &gt;</type>
-        <definition>typedef simd16uint16_tpl&lt; SINGLE_SIMD_LEVEL_256 &gt; faiss::simd16uint16</definition>
-        <argsstring></argsstring>
-        <name>simd16uint16</name>
-        <qualifiedname>faiss::simd16uint16</qualifiedname>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="faiss/impl/fast_scan/kernels_simd256.h" line="15" column="1" bodyfile="faiss/impl/fast_scan/kernels_simd256.h" bodystart="15" bodyend="-1"/>
-      </memberdef>
-      <memberdef kind="typedef" id="namespacefaiss_1a3e73740176377dc0e675be2ee6b4b187" prot="public" static="no">
-        <type><ref refid="structfaiss_1_1simd32uint8__tpl" kindref="compound">simd32uint8_tpl</ref>&lt; <ref refid="namespacefaiss_1aca360ba1cc6270b79a9228cdf3e63df5" kindref="member">SINGLE_SIMD_LEVEL_256</ref> &gt;</type>
-        <definition>using faiss::simd32uint8 = typedef simd32uint8_tpl&lt;SINGLE_SIMD_LEVEL_256&gt;</definition>
-        <argsstring></argsstring>
-        <name>simd32uint8</name>
-        <qualifiedname>faiss::simd32uint8</qualifiedname>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="faiss/impl/fast_scan/kernels_simd256.h" line="16" column="1" bodyfile="faiss/impl/fast_scan/kernels_simd256.h" bodystart="16" bodyend="-1"/>
-      </memberdef>
       <memberdef kind="typedef" id="namespacefaiss_1a33b1dcce3a5a4c296a1f4553c3299ddd" prot="public" static="no">
         <type><ref refid="structfaiss_1_1ResultHandlerUnordered" kindref="compound">ResultHandlerUnordered</ref>&lt; float, <ref refid="namespacefaiss_1ad95f6ecce1dcddede15df19a5b17adf6" kindref="member">idx_t</ref> &gt;</type>
         <definition>typedef ResultHandlerUnordered&lt; float, idx_t &gt; faiss::ResultHandler</definition>
@@ -1443,6 +1416,20 @@
         </inbodydescription>
         <location file="faiss/utils/approx_topk_hamming/approx_topk_hamming.h" line="20" column="1" bodyfile="faiss/utils/approx_topk_hamming/approx_topk_hamming.h" bodystart="20" bodyend="-1"/>
       </memberdef>
+      <memberdef kind="typedef" id="namespacefaiss_1a08d7ecc68fe8a907382e487c0c63f3f7" prot="public" static="no">
+        <type><ref refid="structfaiss_1_1simd16uint16__tpl" kindref="compound">simd16uint16_tpl</ref>&lt; <ref refid="namespacefaiss_1aca360ba1cc6270b79a9228cdf3e63df5" kindref="member">SINGLE_SIMD_LEVEL_256</ref> &gt;</type>
+        <definition>using faiss::simd16uint16 = typedef simd16uint16_tpl&lt;SINGLE_SIMD_LEVEL_256&gt;</definition>
+        <argsstring></argsstring>
+        <name>simd16uint16</name>
+        <qualifiedname>faiss::simd16uint16</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/utils/approx_topk_hamming/approx_topk_hamming.h" line="21" column="1" bodyfile="faiss/utils/approx_topk_hamming/approx_topk_hamming.h" bodystart="21" bodyend="-1"/>
+      </memberdef>
       <memberdef kind="typedef" id="namespacefaiss_1ae0c5f7d2638acf960a3b98e7fd8c1167" prot="public" static="no">
         <type><ref refid="structfaiss_1_1HeapArray" kindref="compound">HeapArray</ref>&lt; <ref refid="structfaiss_1_1CMin" kindref="compound">CMin</ref>&lt; float, int64_t &gt; &gt;</type>
         <definition>typedef HeapArray&lt;CMin&lt;float, int64_t&gt; &gt; faiss::float_minheap_array_t</definition>
@@ -1501,20 +1488,6 @@
       </memberdef>
     </sectiondef>
     <sectiondef kind="var">
-      <memberdef kind="variable" id="namespacefaiss_1a8e2c4631a31c84b5debeab837ae25ca2" prot="public" static="no" extern="yes" mutable="no">
-        <type>FAISS_API bool</type>
-        <definition>FAISS_API bool faiss::simd_result_handlers_accept_virtual</definition>
-        <argsstring></argsstring>
-        <name>simd_result_handlers_accept_virtual</name>
-        <qualifiedname>faiss::simd_result_handlers_accept_virtual</qualifiedname>
-        <briefdescription>
-        </briefdescription>
-        <detaileddescription>
-        </detaileddescription>
-        <inbodydescription>
-        </inbodydescription>
-        <location file="faiss/impl/fast_scan/simd_result_handlers.h" line="174" column="23" declfile="faiss/impl/fast_scan/simd_result_handlers.h" declline="174" declcolumn="23"/>
-      </memberdef>
       <memberdef kind="variable" id="namespacefaiss_1a2dcf7a9c4c343f31bc63a5db0c2bff2d" prot="public" static="no" extern="yes" mutable="no">
         <type>FAISS_API <ref refid="structfaiss_1_1HNSWStats" kindref="compound">HNSWStats</ref></type>
         <definition>FAISS_API HNSWStats faiss::hnsw_stats</definition>
@@ -2987,6 +2960,431 @@
         </inbodydescription>
         <location file="faiss/impl/approx_topk/simdlib256-inl.h" line="27" column="25" bodyfile="faiss/impl/approx_topk/simdlib256-inl.h" bodystart="27" bodyend="34"/>
       </memberdef>
+      <memberdef kind="function" id="namespacefaiss_1aacc69782bd6b22b47947412bd9dde851" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool faiss::cpu_has_amx_bf16</definition>
+        <argsstring>()</argsstring>
+        <name>cpu_has_amx_bf16</name>
+        <qualifiedname>faiss::cpu_has_amx_bf16</qualifiedname>
+        <briefdescription>
+<para>Check if CPU supports AMX-BF16 instructions. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/impl/bf16_distance_amx.h" line="27" column="6" declfile="faiss/impl/bf16_distance_amx.h" declline="27" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacefaiss_1a74eb559a3c2f7049f5ae5189f5b52239" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool faiss::request_amx_permission</definition>
+        <argsstring>()</argsstring>
+        <name>request_amx_permission</name>
+        <qualifiedname>faiss::request_amx_permission</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Request AMX tile permission from Linux kernel (XTILECFG + XTILEDATA). Returns true if permission granted, false otherwise. Must call once per process before using AMX tiles. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/impl/bf16_distance_amx.h" line="32" column="6" declfile="faiss/impl/bf16_distance_amx.h" declline="32" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacefaiss_1ad5845cfef99bae1ca2577f8a383eb8ee" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void faiss::float_to_bf16</definition>
+        <argsstring>(const float *src, uint16_t *dst, size_t n)</argsstring>
+        <name>float_to_bf16</name>
+        <qualifiedname>faiss::float_to_bf16</qualifiedname>
+        <param>
+          <type>const float *</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>uint16_t *</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>n</declname>
+        </param>
+        <briefdescription>
+<para>Convert FP32 array to BF16 (round-to-nearest-even) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/impl/bf16_distance_amx.h" line="35" column="13" bodyfile="faiss/impl/bf16_distance_amx.h" bodystart="35" bodyend="43"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacefaiss_1a56d36ab754b2821abc47fe88f24e77e1" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>float</type>
+        <definition>float faiss::bf16_to_float</definition>
+        <argsstring>(uint16_t value)</argsstring>
+        <name>bf16_to_float</name>
+        <qualifiedname>faiss::bf16_to_float</qualifiedname>
+        <param>
+          <type>uint16_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Convert single BF16 to FP32. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/impl/bf16_distance_amx.h" line="46" column="14" bodyfile="faiss/impl/bf16_distance_amx.h" bodystart="46" bodyend="51"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacefaiss_1ab83d54d3a13d6a4c142c754dd80d71c7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float faiss::bf16_inner_product_avx512</definition>
+        <argsstring>(const uint16_t *query_bf16, const uint16_t *candidate_bf16, size_t dim)</argsstring>
+        <name>bf16_inner_product_avx512</name>
+        <qualifiedname>faiss::bf16_inner_product_avx512</qualifiedname>
+        <param>
+          <type>const uint16_t *</type>
+          <declname>query_bf16</declname>
+        </param>
+        <param>
+          <type>const uint16_t *</type>
+          <declname>candidate_bf16</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>dim</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>AVX512-BF16 single-pair inner product (1 query × 1 candidate) Returns raw dot product (not negated, not 1-dot) </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/impl/bf16_distance_amx.h" line="59" column="7" declfile="faiss/impl/bf16_distance_amx.h" declline="59" declcolumn="7"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacefaiss_1a747aee26dc95ca0f4eef85e847fa6364" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float faiss::bf16_inner_product_scalar</definition>
+        <argsstring>(const uint16_t *query_bf16, const uint16_t *candidate_bf16, size_t dim)</argsstring>
+        <name>bf16_inner_product_scalar</name>
+        <qualifiedname>faiss::bf16_inner_product_scalar</qualifiedname>
+        <param>
+          <type>const uint16_t *</type>
+          <declname>query_bf16</declname>
+        </param>
+        <param>
+          <type>const uint16_t *</type>
+          <declname>candidate_bf16</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>dim</declname>
+        </param>
+        <briefdescription>
+<para>Scalar fallback for BF16 inner product. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/impl/bf16_distance_amx.h" line="65" column="7" declfile="faiss/impl/bf16_distance_amx.h" declline="65" declcolumn="7"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacefaiss_1a4d61f40f598437b7d390edfea7b9c53f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void faiss::bf16_inner_product_batch_amx</definition>
+        <argsstring>(const uint16_t *query_bf16, const uint16_t *const *candidate_ptrs, float *dots_out, size_t count, size_t dim)</argsstring>
+        <name>bf16_inner_product_batch_amx</name>
+        <qualifiedname>faiss::bf16_inner_product_batch_amx</qualifiedname>
+        <param>
+          <type>const uint16_t *</type>
+          <declname>query_bf16</declname>
+        </param>
+        <param>
+          <type>const uint16_t *const *</type>
+          <declname>candidate_ptrs</declname>
+        </param>
+        <param>
+          <type>float *</type>
+          <declname>dots_out</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>dim</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>AMX BF16 batch inner product: 1 query × up to 16 candidates</para>
+<para>Uses swapped-tile layout to avoid vnni repacking: Tile A (src1): count rows × 64 bytes = candidates&apos; 32 BF16 elements Tile B (src2): 16 rows × 4 bytes = query&apos;s 32 BF16 as pairs Tile C (dst): count rows × 4 bytes = FP32 dot-product accumulators</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>query_bf16</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>[dim] BF16 query vector </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>candidate_ptrs</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>array of count pointers to BF16 vectors </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dots_out</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>[count] output raw dot products (FP32) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of candidates (1-16) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dim</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>vector dimension (best if multiple of 32) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/impl/bf16_distance_amx.h" line="82" column="6" declfile="faiss/impl/bf16_distance_amx.h" declline="82" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacefaiss_1a883ca5e20b8b35fa4427672bab6e9990" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void faiss::bf16_inner_product_batch_avx512</definition>
+        <argsstring>(const uint16_t *query_bf16, const uint16_t *const *candidate_ptrs, float *dots_out, size_t count, size_t dim)</argsstring>
+        <name>bf16_inner_product_batch_avx512</name>
+        <qualifiedname>faiss::bf16_inner_product_batch_avx512</qualifiedname>
+        <param>
+          <type>const uint16_t *</type>
+          <declname>query_bf16</declname>
+        </param>
+        <param>
+          <type>const uint16_t *const *</type>
+          <declname>candidate_ptrs</declname>
+        </param>
+        <param>
+          <type>float *</type>
+          <declname>dots_out</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>dim</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Batch inner product using AVX512-BF16 (fallback when AMX unavailable) Same interface as AMX version </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/impl/bf16_distance_amx.h" line="91" column="6" declfile="faiss/impl/bf16_distance_amx.h" declline="91" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacefaiss_1a22dce0950fd61efe6f8c49ddf522807a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void faiss::amx_tile_config_batch16</definition>
+        <argsstring>()</argsstring>
+        <name>amx_tile_config_batch16</name>
+        <qualifiedname>faiss::amx_tile_config_batch16</qualifiedname>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Configure AMX tiles for batch-16 inner product computation. Call once before a series of <ref refid="namespacefaiss_1a4d61f40f598437b7d390edfea7b9c53f" kindref="member">bf16_inner_product_batch_amx()</ref> calls. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/impl/bf16_distance_amx.h" line="113" column="6" declfile="faiss/impl/bf16_distance_amx.h" declline="113" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacefaiss_1adcc5aab213549920f24698a94896fa76" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void faiss::amx_tile_release</definition>
+        <argsstring>()</argsstring>
+        <name>amx_tile_release</name>
+        <qualifiedname>faiss::amx_tile_release</qualifiedname>
+        <briefdescription>
+<para>Release AMX tile state. Call after batch computation is done. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/impl/bf16_distance_amx.h" line="116" column="6" declfile="faiss/impl/bf16_distance_amx.h" declline="116" declcolumn="6"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacefaiss_1a287d6a09f482cf6b73528e01b28b36db" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void faiss::bf16_batch_distances</definition>
+        <argsstring>(const uint16_t *query_bf16, const uint16_t *bf16_data, const idx_t *candidate_ids, float *distances_out, size_t count, size_t dim, bool use_amx, bool is_ip, const float *bf16_norms=nullptr, float query_norm_sq=0.0f, bool tiles_configured=false)</argsstring>
+        <name>bf16_batch_distances</name>
+        <qualifiedname>faiss::bf16_batch_distances</qualifiedname>
+        <param>
+          <type>const uint16_t *</type>
+          <declname>query_bf16</declname>
+        </param>
+        <param>
+          <type>const uint16_t *</type>
+          <declname>bf16_data</declname>
+        </param>
+        <param>
+          <type>const <ref refid="namespacefaiss_1ad95f6ecce1dcddede15df19a5b17adf6" kindref="member">idx_t</ref> *</type>
+          <declname>candidate_ids</declname>
+        </param>
+        <param>
+          <type>float *</type>
+          <declname>distances_out</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>use_amx</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>is_ip</declname>
+        </param>
+        <param>
+          <type>const float *</type>
+          <declname>bf16_norms</declname>
+          <defval>nullptr</defval>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>query_norm_sq</declname>
+          <defval>0.0f</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>tiles_configured</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Compute distances for a batch of candidate IDs from contiguous BF16 storage.</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>query_bf16</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>[dim] BF16 query </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>bf16_data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>[N × dim] contiguous BF16 vector storage </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>candidate_ids</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>[count] candidate internal IDs </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>distances_out</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>[count] output distances </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>count</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>number of candidates </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dim</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>vector dimension </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>use_amx</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>whether to use AMX (else AVX512) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>is_ip</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>true=inner product, false=L2 </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>bf16_norms</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>[N] precomputed ||x||² (needed for L2, can be nullptr for IP) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>query_norm_sq</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>||query||² (needed for L2) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>tiles_configured</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if true, caller has already configured AMX tiles (skip config/release) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/impl/bf16_distance_amx.h" line="135" column="6" declfile="faiss/impl/bf16_distance_amx.h" declline="135" declcolumn="6"/>
+      </memberdef>
       <memberdef kind="function" id="namespacefaiss_1a008c2be900116b8475fb6d85df2f3f29" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
         </templateparamlist>
@@ -3571,7 +3969,7 @@
         </inbodydescription>
         <location file="faiss/impl/FaissException.h" line="104" column="13" bodyfile="faiss/impl/FaissException.h" bodystart="104" bodyend="108"/>
       </memberdef>
-      <memberdef kind="function" id="namespacefaiss_1a0ecf7aeb41fa52ecea9997c9bb299465" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacefaiss_1aee2abf754d8bc2c17a03c5600f0c821c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>int</type>
@@ -3582,6 +3980,12 @@
             <type>int</type>
             <declname>BB</declname>
             <defname>BB</defname>
+          </param>
+          <param>
+            <type>SIMDLevel</type>
+            <declname>KernelSL</declname>
+            <defname>KernelSL</defname>
+            <defval>SINGLE_SIMD_LEVEL</defval>
           </param>
           <param>
             <type>class ResultHandler</type>
@@ -3629,10 +4033,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/accumulate_loops.h" line="51" column="6" bodyfile="faiss/impl/fast_scan/accumulate_loops.h" bodystart="51" bodyend="65"/>
+        <location file="faiss/impl/fast_scan/accumulate_loops.h" line="56" column="6" bodyfile="faiss/impl/fast_scan/accumulate_loops.h" bodystart="56" bodyend="71"/>
       </memberdef>
-      <memberdef kind="function" id="namespacefaiss_1a41e9eb9902fa6b72e8ac13d2764c7291" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacefaiss_1a3306f3a82cfb339696e1bf1f039c5993" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
+          <param>
+            <type>SIMDLevel</type>
+            <declname>KernelSL</declname>
+            <defname>KernelSL</defname>
+            <defval>SINGLE_SIMD_LEVEL</defval>
+          </param>
           <param>
             <type>class ResultHandler</type>
           </param>
@@ -3687,14 +4097,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/accumulate_loops.h" line="68" column="6" bodyfile="faiss/impl/fast_scan/accumulate_loops.h" bodystart="68" bodyend="103"/>
+        <location file="faiss/impl/fast_scan/accumulate_loops.h" line="77" column="6" bodyfile="faiss/impl/fast_scan/accumulate_loops.h" bodystart="77" bodyend="112"/>
       </memberdef>
-      <memberdef kind="function" id="namespacefaiss_1aba3af6f1fcc2aeaade605527062cf06f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacefaiss_1a70eaa3b171d8279456d4c8f8381a05cf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>int</type>
             <declname>QBS</declname>
             <defname>QBS</defname>
+          </param>
+          <param>
+            <type>SIMDLevel</type>
+            <declname>KernelSL</declname>
+            <defname>KernelSL</defname>
+            <defval>SINGLE_SIMD_LEVEL</defval>
           </param>
           <param>
             <type>class ResultHandler</type>
@@ -3742,10 +4158,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/accumulate_loops.h" line="110" column="6" bodyfile="faiss/impl/fast_scan/accumulate_loops.h" bodystart="110" bodyend="145"/>
+        <location file="faiss/impl/fast_scan/accumulate_loops.h" line="123" column="6" bodyfile="faiss/impl/fast_scan/accumulate_loops.h" bodystart="123" bodyend="158"/>
       </memberdef>
-      <memberdef kind="function" id="namespacefaiss_1ae22d2a4b71203ce7a29e0aaa76288ef6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacefaiss_1a87851063b558b58d9a7e88d4cc7e4675" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
+          <param>
+            <type>SIMDLevel</type>
+            <declname>KernelSL</declname>
+            <defname>KernelSL</defname>
+            <defval>SINGLE_SIMD_LEVEL</defval>
+          </param>
           <param>
             <type>class ResultHandler</type>
           </param>
@@ -3796,14 +4218,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/accumulate_loops.h" line="148" column="6" bodyfile="faiss/impl/fast_scan/accumulate_loops.h" bodystart="148" bodyend="219"/>
+        <location file="faiss/impl/fast_scan/accumulate_loops.h" line="164" column="6" bodyfile="faiss/impl/fast_scan/accumulate_loops.h" bodystart="164" bodyend="235"/>
       </memberdef>
-      <memberdef kind="function" id="namespacefaiss_1a533228fd21a496e24d7a29d10dc2f294" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacefaiss_1a9c768b846686f73773cd8c7370310ec2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>int</type>
             <declname>NQ</declname>
             <defname>NQ</defname>
+          </param>
+          <param>
+            <type>SIMDLevel</type>
+            <declname>KernelSL</declname>
+            <defname>KernelSL</defname>
+            <defval>SINGLE_SIMD_LEVEL</defval>
           </param>
           <param>
             <type>class ResultHandler</type>
@@ -3843,14 +4271,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/decompose_qbs.h" line="26" column="6" bodyfile="faiss/impl/fast_scan/decompose_qbs.h" bodystart="26" bodyend="37"/>
+        <location file="faiss/impl/fast_scan/decompose_qbs.h" line="34" column="6" bodyfile="faiss/impl/fast_scan/decompose_qbs.h" bodystart="34" bodyend="51"/>
       </memberdef>
-      <memberdef kind="function" id="namespacefaiss_1add0f1c0cd43ba40b3d3177e9ecb5c692" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacefaiss_1afb19caf756fc3b5e779c11e08b68f16c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>int</type>
             <declname>QBS</declname>
             <defname>QBS</defname>
+          </param>
+          <param>
+            <type>SIMDLevel</type>
+            <declname>KernelSL</declname>
+            <defname>KernelSL</defname>
+            <defval>SINGLE_SIMD_LEVEL</defval>
           </param>
           <param>
             <type>class ResultHandler</type>
@@ -3898,14 +4332,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/decompose_qbs.h" line="41" column="6" bodyfile="faiss/impl/fast_scan/decompose_qbs.h" bodystart="41" bodyend="76"/>
+        <location file="faiss/impl/fast_scan/decompose_qbs.h" line="59" column="6" bodyfile="faiss/impl/fast_scan/decompose_qbs.h" bodystart="59" bodyend="97"/>
       </memberdef>
-      <memberdef kind="function" id="namespacefaiss_1ab2cdafb564f602faae14fd86e6446932" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacefaiss_1abe878e9026de759b6acffadd1d6fb319" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>int</type>
             <declname>NQ</declname>
             <defname>NQ</defname>
+          </param>
+          <param>
+            <type>SIMDLevel</type>
+            <declname>KernelSL</declname>
+            <defname>KernelSL</defname>
+            <defval>SINGLE_SIMD_LEVEL</defval>
           </param>
           <param>
             <type>class ResultHandler</type>
@@ -3953,10 +4393,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/decompose_qbs.h" line="79" column="6" bodyfile="faiss/impl/fast_scan/decompose_qbs.h" bodystart="79" bodyend="91"/>
+        <location file="faiss/impl/fast_scan/decompose_qbs.h" line="104" column="6" bodyfile="faiss/impl/fast_scan/decompose_qbs.h" bodystart="104" bodyend="115"/>
       </memberdef>
-      <memberdef kind="function" id="namespacefaiss_1a0d9870d705865445badfccdebd671379" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacefaiss_1af3b48b50d13e993560f281330b2cf34e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
+          <param>
+            <type>SIMDLevel</type>
+            <declname>KernelSL</declname>
+            <defname>KernelSL</defname>
+            <defval>SINGLE_SIMD_LEVEL</defval>
+          </param>
           <param>
             <type>class ResultHandler</type>
           </param>
@@ -4007,10 +4453,16 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/decompose_qbs.h" line="95" column="6" bodyfile="faiss/impl/fast_scan/decompose_qbs.h" bodystart="95" bodyend="122"/>
+        <location file="faiss/impl/fast_scan/decompose_qbs.h" line="122" column="6" bodyfile="faiss/impl/fast_scan/decompose_qbs.h" bodystart="122" bodyend="149"/>
       </memberdef>
-      <memberdef kind="function" id="namespacefaiss_1ab37c374f16eceb3ce5c4fff02d33ed2c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacefaiss_1a55127d29ddb5e03c22b1ddba68658952" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
+          <param>
+            <type>SIMDLevel</type>
+            <declname>KernelSL</declname>
+            <defname>KernelSL</defname>
+            <defval>SINGLE_SIMD_LEVEL</defval>
+          </param>
           <param>
             <type>class ResultHandler</type>
           </param>
@@ -4062,7 +4514,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/decompose_qbs.h" line="125" column="6" bodyfile="faiss/impl/fast_scan/decompose_qbs.h" bodystart="125" bodyend="198"/>
+        <location file="faiss/impl/fast_scan/decompose_qbs.h" line="155" column="6" bodyfile="faiss/impl/fast_scan/decompose_qbs.h" bodystart="155" bodyend="227"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1acfe6e3147630ecd2e0638b34b5de1a96" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -4150,7 +4602,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/dispatching.h" line="1" column="0" bodyfile="faiss/impl/fast_scan/dispatching.h" bodystart="226" bodyend="241"/>
+        <location file="faiss/impl/fast_scan/dispatching.h" line="1" column="0" bodyfile="faiss/impl/fast_scan/dispatching.h" bodystart="226" bodyend="243"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1acb1d57950137617e347418b97d661736" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -4194,7 +4646,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/dispatching.h" line="1" column="0" bodyfile="faiss/impl/fast_scan/dispatching.h" bodystart="245" bodyend="262"/>
+        <location file="faiss/impl/fast_scan/dispatching.h" line="1" column="0" bodyfile="faiss/impl/fast_scan/dispatching.h" bodystart="247" bodyend="266"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1aab1f6406891713b08ba8d132ce580df7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -4806,6 +5258,52 @@
         </inbodydescription>
         <location file="faiss/impl/fast_scan/fast_scan.h" line="163" column="6" declfile="faiss/impl/fast_scan/fast_scan.h" declline="163" declcolumn="6"/>
       </memberdef>
+      <memberdef kind="function" id="namespacefaiss_1ad85d64db55d9241b194ac66d539aaec5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>SIMDLevel</type>
+            <declname>SL</declname>
+            <defname>SL</defname>
+          </param>
+        </templateparamlist>
+        <type>void</type>
+        <definition>void faiss::accumulate_to_mem_impl</definition>
+        <argsstring>(int nq, size_t ntotal2, int nsq, const uint8_t *codes, const uint8_t *LUT, uint16_t *accu)</argsstring>
+        <name>accumulate_to_mem_impl</name>
+        <qualifiedname>faiss::accumulate_to_mem_impl</qualifiedname>
+        <param>
+          <type>int</type>
+          <declname>nq</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>ntotal2</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>nsq</declname>
+        </param>
+        <param>
+          <type>const uint8_t *</type>
+          <declname>codes</declname>
+        </param>
+        <param>
+          <type>const uint8_t *</type>
+          <declname>LUT</declname>
+        </param>
+        <param>
+          <type>uint16_t *</type>
+          <declname>accu</declname>
+        </param>
+        <briefdescription>
+<para>Per-SIMD specialization of accumulate_to_mem (defined in per-SIMD TUs) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/impl/fast_scan/fast_scan.h" line="173" column="6" declfile="faiss/impl/fast_scan/fast_scan.h" declline="173" declcolumn="6"/>
+      </memberdef>
       <memberdef kind="function" id="namespacefaiss_1adf079d9bc22415cd4dbefa976e7d01c8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
@@ -4862,7 +5360,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/fast_scan.h" line="210" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="210" declcolumn="17"/>
+        <location file="faiss/impl/fast_scan/fast_scan.h" line="220" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="220" declcolumn="17"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1a35ff7d43fae76cd05f815cd45e581a13" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::unique_ptr&lt; <ref refid="structfaiss_1_1FastScanCodeScanner" kindref="compound">FastScanCodeScanner</ref> &gt;</type>
@@ -4914,7 +5412,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/fast_scan.h" line="224" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="224" declcolumn="17"/>
+        <location file="faiss/impl/fast_scan/fast_scan.h" line="234" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="234" declcolumn="17"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1a3ad34a3ef1406f40d52949627fc77719" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -4956,7 +5454,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/fast_scan.h" line="237" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="237" declcolumn="17"/>
+        <location file="faiss/impl/fast_scan/fast_scan.h" line="247" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="247" declcolumn="17"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1a4932e7c4893c94e60e3348a1233cd54f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -5005,7 +5503,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/fast_scan.h" line="245" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="245" declcolumn="17"/>
+        <location file="faiss/impl/fast_scan/fast_scan.h" line="255" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="255" declcolumn="17"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1a4e160f426b8e5bd0fdda9bdbbafc349d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::unique_ptr&lt; <ref refid="structfaiss_1_1FastScanCodeScanner" kindref="compound">FastScanCodeScanner</ref> &gt;</type>
@@ -5040,7 +5538,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/fast_scan.h" line="255" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="255" declcolumn="17"/>
+        <location file="faiss/impl/fast_scan/fast_scan.h" line="265" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="265" declcolumn="17"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1a0d7e8cf0a84cec66a5aa4bc4e9167c77" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::unique_ptr&lt; <ref refid="structfaiss_1_1FastScanCodeScanner" kindref="compound">FastScanCodeScanner</ref> &gt;</type>
@@ -5083,7 +5581,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/fast_scan.h" line="263" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="263" declcolumn="17"/>
+        <location file="faiss/impl/fast_scan/fast_scan.h" line="273" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="273" declcolumn="17"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1a1b4303e9351b4aad6d8f04e1553a081c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -5141,7 +5639,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/fast_scan.h" line="283" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="283" declcolumn="17"/>
+        <location file="faiss/impl/fast_scan/fast_scan.h" line="293" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="293" declcolumn="17"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1a92c4821dba6629fe1816728262ea812c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::unique_ptr&lt; <ref refid="structfaiss_1_1FastScanCodeScanner" kindref="compound">FastScanCodeScanner</ref> &gt;</type>
@@ -5192,7 +5690,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/fast_scan.h" line="295" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="295" declcolumn="17"/>
+        <location file="faiss/impl/fast_scan/fast_scan.h" line="305" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="305" declcolumn="17"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1a7dc5133076fcb0c9f14a4674d0be5bea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -5250,7 +5748,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/fast_scan.h" line="308" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="308" declcolumn="17"/>
+        <location file="faiss/impl/fast_scan/fast_scan.h" line="318" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="318" declcolumn="17"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1aa09bd8ecad2830d3fecddfcbe61e222b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::unique_ptr&lt; <ref refid="structfaiss_1_1FastScanCodeScanner" kindref="compound">FastScanCodeScanner</ref> &gt;</type>
@@ -5301,9 +5799,9 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/fast_scan.h" line="320" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="320" declcolumn="17"/>
+        <location file="faiss/impl/fast_scan/fast_scan.h" line="330" column="17" declfile="faiss/impl/fast_scan/fast_scan.h" declline="330" declcolumn="17"/>
       </memberdef>
-      <memberdef kind="function" id="namespacefaiss_1a9c768b846686f73773cd8c7370310ec2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacefaiss_1a88f8d84ab96f0a265d7f5430e609808e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>int</type>
@@ -5314,6 +5812,12 @@
             <type>int</type>
             <declname>BB</declname>
             <defname>BB</defname>
+          </param>
+          <param>
+            <type>SIMDLevel</type>
+            <declname>KernelSL</declname>
+            <defname>KernelSL</defname>
+            <defval>SINGLE_SIMD_LEVEL</defval>
           </param>
           <param>
             <type>class ResultHandler</type>
@@ -5353,14 +5857,20 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/kernels_simd256.h" line="23" column="6" bodyfile="faiss/impl/fast_scan/kernels_simd256.h" bodystart="23" bodyend="109"/>
+        <location file="faiss/impl/fast_scan/kernels_simd256.h" line="29" column="6" bodyfile="faiss/impl/fast_scan/kernels_simd256.h" bodystart="29" bodyend="119"/>
       </memberdef>
-      <memberdef kind="function" id="namespacefaiss_1a25f76b72513ae946e5cd5ff8f3e24988" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+      <memberdef kind="function" id="namespacefaiss_1a974e303dbe99e9d08b4380cdb421097c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
           <param>
             <type>int</type>
             <declname>NQ</declname>
             <defname>NQ</defname>
+          </param>
+          <param>
+            <type>SIMDLevel</type>
+            <declname>KernelSL</declname>
+            <defname>KernelSL</defname>
+            <defval>SINGLE_SIMD_LEVEL</defval>
           </param>
           <param>
             <type>class ResultHandler</type>
@@ -5400,7 +5910,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/kernels_simd256.h" line="116" column="6" bodyfile="faiss/impl/fast_scan/kernels_simd256.h" bodystart="116" bodyend="193"/>
+        <location file="faiss/impl/fast_scan/kernels_simd256.h" line="130" column="6" bodyfile="faiss/impl/fast_scan/kernels_simd256.h" bodystart="130" bodyend="211"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1aad0075c3f7200fc407c90099e187f3c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -5452,7 +5962,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/rabitq_dispatching.h" line="1" column="0" bodyfile="faiss/impl/fast_scan/rabitq_dispatching.h" bodystart="35" bodyend="54"/>
+        <location file="faiss/impl/fast_scan/rabitq_dispatching.h" line="1" column="0" bodyfile="faiss/impl/fast_scan/rabitq_dispatching.h" bodystart="35" bodyend="60"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1a2296c34f3219451c88e96e7a951e64c0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <templateparamlist>
@@ -5504,7 +6014,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/fast_scan/rabitq_dispatching.h" line="1" column="0" bodyfile="faiss/impl/fast_scan/rabitq_dispatching.h" bodystart="59" bodyend="80"/>
+        <location file="faiss/impl/fast_scan/rabitq_dispatching.h" line="1" column="0" bodyfile="faiss/impl/fast_scan/rabitq_dispatching.h" bodystart="65" bodyend="88"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1a5be80d29ca0583f942d3ccf479c30610" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>int</type>
@@ -5615,6 +6125,85 @@
         </inbodydescription>
         <location file="faiss/impl/HNSW.h" line="268" column="5" declfile="faiss/impl/HNSW.h" declline="268" declcolumn="5"/>
       </memberdef>
+      <memberdef kind="function" id="namespacefaiss_1a4a829292efe3543508f763962874ea25" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int faiss::search_from_candidates_bf16</definition>
+        <argsstring>(const HNSW &amp;hnsw, DistanceComputer &amp;qdis, ResultHandler&lt; HNSW::C &gt; &amp;res, HNSW::MinimaxHeap &amp;candidates, VisitedTable &amp;vt, HNSWStats &amp;stats, int level, int nres_in, const SearchParametersHNSW *params, const uint16_t *bf16_vectors, const float *bf16_norms, const uint16_t *query_bf16, float query_norm, int dim, bool is_ip, bool use_amx)</argsstring>
+        <name>search_from_candidates_bf16</name>
+        <qualifiedname>faiss::search_from_candidates_bf16</qualifiedname>
+        <param>
+          <type>const <ref refid="structfaiss_1_1HNSW" kindref="compound">HNSW</ref> &amp;</type>
+          <declname>hnsw</declname>
+        </param>
+        <param>
+          <type><ref refid="structfaiss_1_1DistanceComputer" kindref="compound">DistanceComputer</ref> &amp;</type>
+          <declname>qdis</declname>
+        </param>
+        <param>
+          <type><ref refid="structfaiss_1_1ResultHandlerUnordered" kindref="compound">ResultHandler</ref>&lt; <ref refid="structfaiss_1_1CMax" kindref="compound">HNSW::C</ref> &gt; &amp;</type>
+          <declname>res</declname>
+        </param>
+        <param>
+          <type>HNSW::MinimaxHeap &amp;</type>
+          <declname>candidates</declname>
+        </param>
+        <param>
+          <type><ref refid="structfaiss_1_1VisitedTable" kindref="compound">VisitedTable</ref> &amp;</type>
+          <declname>vt</declname>
+        </param>
+        <param>
+          <type><ref refid="structfaiss_1_1HNSWStats" kindref="compound">HNSWStats</ref> &amp;</type>
+          <declname>stats</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>level</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>nres_in</declname>
+        </param>
+        <param>
+          <type>const <ref refid="structfaiss_1_1SearchParametersHNSW" kindref="compound">SearchParametersHNSW</ref> *</type>
+          <declname>params</declname>
+        </param>
+        <param>
+          <type>const uint16_t *</type>
+          <declname>bf16_vectors</declname>
+        </param>
+        <param>
+          <type>const float *</type>
+          <declname>bf16_norms</declname>
+        </param>
+        <param>
+          <type>const uint16_t *</type>
+          <declname>query_bf16</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>query_norm</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>dim</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>is_ip</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>use_amx</declname>
+        </param>
+        <briefdescription>
+<para>BF16 + AMX accelerated version of search_from_candidates. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="faiss/impl/HNSW.h" line="281" column="5" declfile="faiss/impl/HNSW.h" declline="281" declcolumn="5"/>
+      </memberdef>
       <memberdef kind="function" id="namespacefaiss_1ad5378e0f1958868c1170b8552b44fc31" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type><ref refid="structfaiss_1_1HNSWStats" kindref="compound">HNSWStats</ref></type>
         <definition>HNSWStats faiss::greedy_update_nearest</definition>
@@ -5647,7 +6236,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/HNSW.h" line="280" column="11" declfile="faiss/impl/HNSW.h" declline="280" declcolumn="11"/>
+        <location file="faiss/impl/HNSW.h" line="299" column="11" declfile="faiss/impl/HNSW.h" declline="299" declcolumn="11"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1a7fcc71c4eb814ea582ad9ffb0c909d7a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>std::priority_queue&lt; HNSW::Node &gt;</type>
@@ -5685,7 +6274,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/HNSW.h" line="287" column="21" declfile="faiss/impl/HNSW.h" declline="287" declcolumn="21"/>
+        <location file="faiss/impl/HNSW.h" line="306" column="21" declfile="faiss/impl/HNSW.h" declline="306" declcolumn="21"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1ad97c6c4a248bc0ac4399e4f0eea2ff99" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -5732,7 +6321,7 @@
         </detaileddescription>
         <inbodydescription>
         </inbodydescription>
-        <location file="faiss/impl/HNSW.h" line="295" column="6" declfile="faiss/impl/HNSW.h" declline="295" declcolumn="6"/>
+        <location file="faiss/impl/HNSW.h" line="314" column="6" declfile="faiss/impl/HNSW.h" declline="314" declcolumn="6"/>
       </memberdef>
       <memberdef kind="function" id="namespacefaiss_1a97af3c36835c195254ba0312b0f78140" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
         <type>void</type>
@@ -20077,6 +20666,9 @@
 <para>Copyright (c) Meta Platforms, Inc. and its affiliates.</para>
 <para>This source code is licensed under the MIT license found in the LICENSE file in the root directory of this source tree.</para>
 <para>Mirrors the role of StandardGpuResources for the Metal backend.</para>
+<para>Copyright OpenSearch Contributors SPDX-License-Identifier: Apache-2.0</para>
+<para>BF16 + AMX accelerated distance computation for <ref refid="structfaiss_1_1HNSW" kindref="compound">HNSW</ref> search. Ported from hnswlib-amx project.</para>
+<para>Platform: requires Linux x86_64 with AMX/AVX512-BF16 support. On other platforms, all functions return safe defaults (false/fallback).</para>
 <para>Safe arithmetic</para>
 <para>PQ4 SIMD packing and accumulation functions</para>
 <para>The basic kernel accumulates nq query vectors with bbs = nb * 2 * 16 vectors and produces an output matrix for that. It is interesting for nq * nb &lt;= 4, otherwise register spilling becomes too large.</para>
