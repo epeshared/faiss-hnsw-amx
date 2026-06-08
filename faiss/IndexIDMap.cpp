@@ -258,11 +258,31 @@ void IndexIDMapTemplate<IndexT>::range_search(
         RangeSearchResult* result,
         const SearchParameters* params) const {
     if (params) {
-        SearchParameters internal_search_parameters;
-        IDSelectorTranslated id_selector_translated(id_map, params->sel);
-        internal_search_parameters.sel = &id_selector_translated;
+        IDSelectorTranslated this_idtrans(this->id_map, nullptr);
+        ScopedSelChange sel_change;
+        IDGrouperTranslated this_idgrptrans(this->id_map, nullptr);
+        ScopedGrpChange grp_change;
 
-        index->range_search(n, x, radius, result, &internal_search_parameters);
+        if (params->sel) {
+            auto idtrans = dynamic_cast<const IDSelectorTranslated*>(params->sel);
+
+            if (!idtrans) {
+                auto params_non_const = const_cast<SearchParameters*>(params);
+                this_idtrans.sel = params->sel;
+                sel_change.set(params_non_const, &this_idtrans);
+            }
+        }
+
+        if (params->grp) {
+            auto idtrans = dynamic_cast<const IDGrouperTranslated*>(params->grp);
+
+            if (!idtrans) {
+                auto params_non_const = const_cast<SearchParameters*>(params);
+                this_idgrptrans.grp = params->grp;
+                grp_change.set(params_non_const, &this_idgrptrans);
+            }
+        }
+        index->range_search(n, x, radius, result, params);
     } else {
         index->range_search(n, x, radius, result);
     }
