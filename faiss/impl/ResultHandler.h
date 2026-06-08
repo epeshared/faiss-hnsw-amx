@@ -424,9 +424,9 @@ struct GroupedHeapBlockResultHandler : BlockResultHandler<C> {
      * called from 1 thread)
      */
 
-    struct SingleResultHandler : ResultHandler<C> {
+    struct SingleResultHandler : ResultHandlerT<C> {
         GroupedHeapBlockResultHandler& hr;
-        using ResultHandler<C>::threshold;
+        using ResultHandlerT<C>::threshold;
         size_t k;
 
         T* heap_dis;

@@ -42,8 +42,6 @@ IndexIVFPQFastScan::IndexIVFPQFastScan(
         int bbs_in,
         bool own_invlists_in)
         : IndexIVFFastScan(
-    precomputed_table = new AlignedTable<float>();
-    owns_precomputed_table = true;
                   quantizer_in,
                   d_in,
                   nlist_in,
@@ -52,6 +50,8 @@ IndexIVFPQFastScan::IndexIVFPQFastScan(
                   own_invlists_in),
           pq(d_in, M_in, nbits_in) {
     by_residual = false; // set to false by default because it's faster
+    precomputed_table = new AlignedTable<float>();
+    owns_precomputed_table = true;
 
     init_fastscan(
             &pq, M_in, nbits_in, nlist_in, metric, bbs_in, own_invlists_in);
