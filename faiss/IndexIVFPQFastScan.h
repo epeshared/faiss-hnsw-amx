@@ -38,7 +38,8 @@ struct IndexIVFPQFastScan : IndexIVFFastScan {
     /// precomputed tables management
     int use_precomputed_table = 0;
     /// if use_precompute_table size (nlist, pq.M, pq.ksub)
-    AlignedTable<float> precomputed_table;
+    bool owns_precomputed_table;
+    AlignedTable<float>* precomputed_table;
 
     IndexIVFPQFastScan(
             Index* quantizer,
@@ -52,6 +53,10 @@ struct IndexIVFPQFastScan : IndexIVFFastScan {
 
     IndexIVFPQFastScan();
 
+    IndexIVFPQFastScan(const IndexIVFPQFastScan& orig);
+
+    ~IndexIVFPQFastScan();
+
     // built from an IndexIVFPQ
     explicit IndexIVFPQFastScan(const IndexIVFPQ& orig, int bbs = 32);
 
@@ -64,6 +69,10 @@ struct IndexIVFPQFastScan : IndexIVFFastScan {
 
     /// build precomputed table, possibly updating use_precomputed_table
     void precompute_table();
+    /// Pass in externally a precomputed
+    void set_precomputed_table(
+            AlignedTable<float>* precompute_table,
+            int _use_precomputed_table);
 
     /// same as the regular IVFPQ encoder. The codes are not reorganized by
     /// blocks a that point

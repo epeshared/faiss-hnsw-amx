@@ -140,7 +140,7 @@ float QueryTables::precompute_list_tables_L2() {
 
         fvec_madd_dispatch(
                 pq.M * pq.ksub,
-                ivfpq.precomputed_table.data() + key * pq.ksub * pq.M,
+                ivfpq.precomputed_table->data() + key * pq.ksub * pq.M,
                 -2.0,
                 sim_table_2,
                 sim_table);
@@ -169,7 +169,7 @@ float QueryTables::precompute_list_tables_L2() {
             k >>= cpq.nbits;
 
             // get corresponding table
-            const float* pc = ivfpq.precomputed_table.data() +
+            const float* pc = ivfpq.precomputed_table->data() +
                     (ki * pq.M + cm * Mf) * pq.ksub;
 
             if (polysemous_ht == 0) {
@@ -198,7 +198,7 @@ float QueryTables::precompute_list_table_pointers_L2() {
     if (use_precomputed_table == 1) {
         dis0 = coarse_dis;
 
-        const float* s = ivfpq.precomputed_table.data() + key * pq.ksub * pq.M;
+        const float* s = ivfpq.precomputed_table->data() + key * pq.ksub * pq.M;
         for (size_t m = 0; m < pq.M; m++) {
             sim_table_ptrs[m] = s;
             s += pq.ksub;
@@ -218,7 +218,7 @@ float QueryTables::precompute_list_table_pointers_L2() {
             size_t ki = k & ((uint64_t(1) << cpq.nbits) - 1);
             k >>= cpq.nbits;
 
-            const float* pc = ivfpq.precomputed_table.data() +
+            const float* pc = ivfpq.precomputed_table->data() +
                     (ki * pq.M + cm * Mf) * pq.ksub;
 
             for (size_t m = m0; m < m0 + Mf; m++) {

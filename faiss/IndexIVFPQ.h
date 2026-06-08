@@ -48,7 +48,8 @@ struct IndexIVFPQ : IndexIVF {
 
     /// if use_precompute_table
     /// size nlist * pq.M * pq.ksub
-    AlignedTable<float> precomputed_table;
+    bool owns_precomputed_table;
+    AlignedTable<float>* precomputed_table;
 
     IndexIVFPQ(
             Index* quantizer,
@@ -58,6 +59,10 @@ struct IndexIVFPQ : IndexIVF {
             size_t nbits_per_idx,
             MetricType metric = METRIC_L2,
             bool own_invlists = true);
+
+    IndexIVFPQ(const IndexIVFPQ& orig);
+
+    ~IndexIVFPQ();
 
     void encode_vectors(
             idx_t n,
@@ -146,6 +151,15 @@ struct IndexIVFPQ : IndexIVF {
 
     /// build precomputed table
     void precompute_table();
+
+    /**
+     * Initialize the precomputed table
+     * @param precompute_table
+     * @param _use_precomputed_table
+     */
+    void set_precomputed_table(
+            AlignedTable<float>* precompute_table,
+            int _use_precomputed_table);
 
     IndexIVFPQ();
 };

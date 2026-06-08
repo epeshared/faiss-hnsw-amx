@@ -15,7 +15,9 @@
 #include "faiss/index_io.h"
 #include "test_util.h"
 
-pthread_mutex_t temp_file_mutex = PTHREAD_MUTEX_INITIALIZER;
+namespace {
+    pthread_mutex_t temp_file_mutex = PTHREAD_MUTEX_INITIALIZER;
+}
 
 TEST(IO, TestReadHNSWPQ_whenSDCDisabledFlagPassed_thenDisableSDCTable) {
     // Create a temp file name with a randomized component for stress runs
