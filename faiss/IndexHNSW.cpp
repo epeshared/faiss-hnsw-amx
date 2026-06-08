@@ -334,14 +334,26 @@ void IndexHNSW::search(
         const SearchParameters* params) const {
     FAISS_THROW_IF_NOT(k > 0);
 
-    if (is_similarity_metric(this->metric_type)) {
-        using RH = HeapBlockResultHandler<HNSW::C_similarity>;
-        RH bres(n, distances, labels, k);
-        hnsw_search(this, n, x, bres, params);
+    if (params && params->grp) {
+        if (is_similarity_metric(this->metric_type)) {
+            using RH = GroupedHeapBlockResultHandler<HNSW::C_similarity>;
+            RH bres(n, distances, labels, k, params->grp);
+            hnsw_search(this, n, x, bres, params);
+        } else {
+            using RH = GroupedHeapBlockResultHandler<HNSW::C_distance>;
+            RH bres(n, distances, labels, k, params->grp);
+            hnsw_search(this, n, x, bres, params);
+        }
     } else {
-        using RH = HeapBlockResultHandler<HNSW::C_distance>;
-        RH bres(n, distances, labels, k);
-        hnsw_search(this, n, x, bres, params);
+        if (is_similarity_metric(this->metric_type)) {
+            using RH = HeapBlockResultHandler<HNSW::C_similarity>;
+            RH bres(n, distances, labels, k);
+            hnsw_search(this, n, x, bres, params);
+        } else {
+            using RH = HeapBlockResultHandler<HNSW::C_distance>;
+            RH bres(n, distances, labels, k);
+            hnsw_search(this, n, x, bres, params);
+        }
     }
 }
 

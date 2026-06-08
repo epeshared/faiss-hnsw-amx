@@ -27,6 +27,8 @@ set(FAISS_TEST_SRC
   test_hnsw.cpp
   test_NSG_compressed_graph.cpp
   test_partitioning.cpp
+  test_id_grouper.cpp
+  test_group_heap.cpp
   test_fastscan_perf.cpp
   test_pqfs_unaligned.cpp
   test_common_ivf_empty_index.cpp

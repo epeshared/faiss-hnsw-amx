@@ -1486,6 +1486,12 @@ int extract_k_from_ResultHandler(ResultHandler& res) {
     if (auto hres = dynamic_cast<typename RH::SingleResultHandler*>(&res)) {
         return hres->k;
     }
+
+    if (auto hres = dynamic_cast<
+                GroupedHeapBlockResultHandler<C>::SingleResultHandler*>(&res)) {
+        return hres->k;
+    }
+
     return 1;
 }
 
