@@ -14,10 +14,10 @@
 #include <faiss/IndexIDMap.h>
 #include <faiss/MetricType.h>
 #include <faiss/impl/IDGrouper.h>
+#include "faiss/IndexBinaryHNSW.h"
 
 // 64-bit int
 using idx_t = faiss::idx_t;
-
 using namespace faiss;
 
 TEST(IdGrouper, get_group) {
@@ -172,7 +172,58 @@ TEST(IdGrouper, bitmap_with_hnsw) {
     delete[] xb;
 }
 
-TEST(IdGrouper, bitmap_with_hnswn_idmap) {
+TEST(IdGrouper, bitmap_with_binary_hnsw) {
+    int d = 16;   // dimension
+    int nb = 10; // database size
+
+    std::vector<uint8_t> database(nb * (d / 8));
+    for (size_t i = 0; i < nb * (d / 8); i++) {
+        database[i] = rand() % 0x100;
+    }
+
+    uint64_t bitmap[1] = {};
+    faiss::IDGrouperBitmap id_grouper(1, bitmap);
+    for (int i = 0; i < nb; i++) {
+        if (i % 2 == 1) {
+            id_grouper.set_group(i);
+        }
+    }
+
+    int k = 10;
+    int m = 8;
+    faiss::IndexBinary* index =
+            new faiss::IndexBinaryHNSW(d, m);
+    index->add(nb, database.data()); // add vectors to the index
+
+    // search
+    idx_t* I = new idx_t[k];
+    int32_t* D = new int32_t[k];
+
+    auto pSearchParameters = new faiss::SearchParametersHNSW();
+    pSearchParameters->grp = &id_grouper;
+
+    index->search(1, database.data(), k, D, I, pSearchParameters);
+
+    std::unordered_set<int> group_ids;
+    ASSERT_EQ(0, I[0]);
+    ASSERT_EQ(0, D[0]);
+    group_ids.insert(id_grouper.get_group(I[0]));
+    for (int j = 1; j < 5; j++) {
+        ASSERT_NE(-1, I[j]);
+        ASSERT_NE(std::numeric_limits<int32_t>::max(), D[j]);
+        group_ids.insert(id_grouper.get_group(I[j]));
+    }
+    for (int j = 5; j < k; j++) {
+        ASSERT_EQ(-1, I[j]);
+        ASSERT_EQ(std::numeric_limits<int32_t>::max(), D[j]);
+    }
+    ASSERT_EQ(5, group_ids.size());
+
+    delete[] I;
+    delete[] D;
+}
+
+TEST(IdGrouper, bitmap_with_hnsw_idmap) {
     int d = 1;   // dimension
     int nb = 10; // database size
 
@@ -238,4 +289,66 @@ TEST(IdGrouper, bitmap_with_hnswn_idmap) {
     delete[] I;
     delete[] D;
     delete[] xb;
+}
+
+TEST(IdGrouper, bitmap_with_binary_hnsw_idmap) {
+    int d = 16;   // dimension
+    int nb = 10; // database size
+
+    std::vector<uint8_t> database(nb * (d / 8));
+    for (size_t i = 0; i < nb * (d / 8); i++) {
+        database[i] = rand() % 0x100;
+    }
+
+    idx_t* xids = new idx_t[nb];
+    uint64_t bitmap[1] = {};
+    faiss::IDGrouperBitmap id_grouper(1, bitmap);
+    int num_grp = 0;
+    int grp_size = 2;
+    int id_in_grp = 0;
+    for (int i = 0; i < nb; i++) {
+        xids[i] = i + num_grp;
+        id_in_grp++;
+        if (id_in_grp == grp_size) {
+            id_grouper.set_group(i + num_grp + 1);
+            num_grp++;
+            id_in_grp = 0;
+        }
+    }
+
+    int k = 10;
+    int m = 8;
+
+    faiss::IndexBinary* index =
+            new faiss::IndexBinaryHNSW(d, m);
+    faiss::IndexBinaryIDMap id_map =
+            faiss::IndexBinaryIDMap(index); // add vectors to the index
+    id_map.add_with_ids(nb, database.data(), xids);
+
+    // search
+    idx_t* I = new idx_t[k];
+    int32_t* D = new int32_t[k];
+
+    auto pSearchParameters = new faiss::SearchParametersHNSW();
+    pSearchParameters->grp = &id_grouper;
+
+    id_map.search(1, database.data(), k, D, I, pSearchParameters);
+
+    std::unordered_set<int> group_ids;
+    ASSERT_EQ(0, I[0]);
+    ASSERT_EQ(0, D[0]);
+    group_ids.insert(id_grouper.get_group(I[0]));
+    for (int j = 1; j < 5; j++) {
+        ASSERT_NE(-1, I[j]);
+        ASSERT_NE(std::numeric_limits<int32_t>::max(), D[j]);
+        group_ids.insert(id_grouper.get_group(I[j]));
+    }
+    for (int j = 5; j < k; j++) {
+        ASSERT_EQ(-1, I[j]);
+        ASSERT_EQ(std::numeric_limits<int32_t>::max(), D[j]);
+    }
+    ASSERT_EQ(5, group_ids.size());
+
+    delete[] I;
+    delete[] D;
 }

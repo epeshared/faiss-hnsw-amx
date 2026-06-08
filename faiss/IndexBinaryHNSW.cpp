@@ -210,6 +210,44 @@ void IndexBinaryHNSW::train(idx_t n, const uint8_t* x) {
     is_trained = true;
 }
 
+namespace {
+
+template <class RH>
+void binary_hnsw_search(
+        const IndexBinaryHNSW* index,
+        idx_t n,
+        const uint8_t* x,
+        RH& bres,
+        const SearchParameters* params_in) {
+    size_t n1 = 0, n2 = 0, ndis = 0, nhops = 0;
+
+#pragma omp parallel
+    {
+        std::unique_ptr<VisitedTable> vt = VisitedTable::create(index->ntotal);
+        std::unique_ptr<DistanceComputer> dis(index->get_distance_computer());
+        typename RH::SingleResultHandler res(bres);
+
+#pragma omp for reduction(+ : n1, n2, ndis, nhops)
+        for (idx_t i = 0; i < n; i++) {
+            res.begin(i);
+            dis->set_query((float*)(x + i * index->code_size));
+            // Given that IndexBinaryHNSW is not an IndexHNSW, we pass nullptr
+            // as the index parameter (only used for Panorama execution).
+            HNSWStats stats =
+                    index->hnsw.search(*dis, nullptr, res, *vt, params_in);
+            n1 += stats.n1;
+            n2 += stats.n2;
+            ndis += stats.ndis;
+            nhops += stats.nhops;
+            res.end();
+        }
+    }
+
+    hnsw_stats.combine({n1, n2, ndis, nhops});
+}
+
+} // anonymous namespace
+
 void IndexBinaryHNSW::search(
         idx_t n,
         const uint8_t* x,
@@ -229,35 +267,15 @@ void IndexBinaryHNSW::search(
     // to int in the end
     float* distances_f = (float*)distances;
 
-    using RH = HeapBlockResultHandler<HNSW::C>;
-    RH bres(n, distances_f, labels, k);
-
-    size_t n1 = 0, n2 = 0, ndis = 0, nhops = 0;
-
-#pragma omp parallel
-    {
-        std::unique_ptr<VisitedTable> vt = VisitedTable::create(ntotal);
-        std::unique_ptr<DistanceComputer> dis(get_distance_computer());
-        RH::SingleResultHandler res(bres);
-
-#pragma omp for reduction(+ : n1, n2, ndis, nhops)
-        for (idx_t i = 0; i < n; i++) {
-            res.begin(i);
-            dis->set_query((float*)(x + i * code_size));
-            // Given that IndexBinaryHNSW is not an IndexHNSW, we pass nullptr
-            // as the index parameter. This state does not get used in the
-            // search function, as it is merely there to enable Panorama
-            // execution for IndexHNSWFlatPanorama.
-            HNSWStats stats = hnsw.search(*dis, nullptr, res, *vt, params_in);
-            n1 += stats.n1;
-            n2 += stats.n2;
-            ndis += stats.ndis;
-            nhops += stats.nhops;
-            res.end();
-        }
+    if (params_in && params_in->grp) {
+        using RH = GroupedHeapBlockResultHandler<HNSW::C>;
+        RH bres(n, distances_f, labels, k, params_in->grp);
+        binary_hnsw_search(this, n, x, bres, params_in);
+    } else {
+        using RH = HeapBlockResultHandler<HNSW::C>;
+        RH bres(n, distances_f, labels, k);
+        binary_hnsw_search(this, n, x, bres, params_in);
     }
-
-    hnsw_stats.combine({n1, n2, ndis, nhops});
 
 #pragma omp parallel for
     for (idx_t i = 0; i < n * k; ++i) {
