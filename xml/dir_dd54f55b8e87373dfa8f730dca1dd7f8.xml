@@ -12,7 +12,6 @@
     <innerfile refid="AdditiveQuantizer_8h">AdditiveQuantizer.h</innerfile>
     <innerfile refid="AdSampling_8h">AdSampling.h</innerfile>
     <innerfile refid="AuxIndexStructures_8h">AuxIndexStructures.h</innerfile>
-    <innerfile refid="bf16__distance__amx_8h">bf16_distance_amx.h</innerfile>
     <innerfile refid="ClusteringHelpers_8h">ClusteringHelpers.h</innerfile>
     <innerfile refid="ClusteringInitialization_8h">ClusteringInitialization.h</innerfile>
     <innerfile refid="CodePacker_8h">CodePacker.h</innerfile>
