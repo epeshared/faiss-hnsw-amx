@@ -403,9 +403,6 @@ void IndexBinaryHNSWCagra::search(
 
         float* distances_f = (float*)distances;
 
-        using RH = HeapBlockResultHandler<HNSW::C>;
-        RH bres(n, distances_f, labels, k);
-
         std::vector<storage_idx_t> nearest(n);
         std::vector<float> nearest_d(n);
 
@@ -434,35 +431,48 @@ void IndexBinaryHNSWCagra::search(
                     nearest[i] >= 0, "Could not find a valid entrypoint.");
         }
 
+        auto runLevel0 = [&]<class RH>(RH& bres) {
 #pragma omp parallel
-        {
-            std::unique_ptr<VisitedTable> vt = VisitedTable::create(ntotal);
-            std::unique_ptr<DistanceComputer> dis(get_distance_computer());
-            HNSWStats search_stats;
-            RH::SingleResultHandler res(bres);
+            {
+                std::unique_ptr<VisitedTable> vt = VisitedTable::create(ntotal);
+                std::unique_ptr<DistanceComputer> dis(get_distance_computer());
+                HNSWStats search_stats;
+                typename RH::SingleResultHandler res(bres);
 
 #pragma omp for
-            for (idx_t i = 0; i < n; i++) {
-                res.begin(i);
-                dis->set_query((float*)(x + i * code_size));
+                for (idx_t i = 0; i < n; i++) {
+                    res.begin(i);
+                    dis->set_query((float*)(x + i * code_size));
 
-                hnsw.search_level_0(
-                        *dis,
-                        res,
-                        1,
-                        &nearest[i],
-                        &nearest_d[i],
-                        1, // search_type
-                        search_stats,
-                        *vt,
-                        params);
+                    hnsw.search_level_0(
+                            *dis,
+                            res,
+                            1,
+                            &nearest[i],
+                            &nearest_d[i],
+                            1, // search_type
+                            search_stats,
+                            *vt,
+                            params);
 
-                res.end();
-            }
+                    res.end();
+                }
 #pragma omp critical
-            {
-                hnsw_stats.combine(search_stats);
+                {
+                    hnsw_stats.combine(search_stats);
+                }
             }
+        };
+
+        // OS patch (nested binary cagra): grouped (parent-child) searches go
+        // through GroupedHeapBlockResultHandler when params->grp is set.
+        if (params && params->grp) {
+            GroupedHeapBlockResultHandler<HNSW::C> bres(
+                    n, distances_f, labels, k, params->grp);
+            runLevel0(bres);
+        } else {
+            HeapBlockResultHandler<HNSW::C> bres(n, distances_f, labels, k);
+            runLevel0(bres);
         }
 
 #pragma omp parallel for

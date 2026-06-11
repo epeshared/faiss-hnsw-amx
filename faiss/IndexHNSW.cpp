@@ -547,10 +547,7 @@ void IndexHNSW::search_level_0(
 
     size_t hnsw_ntotal = hnsw.levels.size();
 
-    auto run = [&]<class C>() {
-        using RH = HeapBlockResultHandler<C>;
-        RH bres(n, distances, labels, k);
-
+    auto run = [&]<class C, class RH>(RH& bres) {
         std::exception_ptr ex;
         std::atomic<bool> interrupt{false};
 #pragma omp parallel
@@ -601,10 +598,23 @@ void IndexHNSW::search_level_0(
         omp_rethrow_if_exception(ex);
     };
 
+    // OS patch (multi-vector): route grouped (nested/parent-child) searches
+    // through GroupedHeapBlockResultHandler when params->grp is set.
+    auto dispatch = [&]<class C>() {
+        if (params && params->grp) {
+            GroupedHeapBlockResultHandler<C> bres(
+                    n, distances, labels, k, params->grp);
+            run.template operator()<C>(bres);
+        } else {
+            HeapBlockResultHandler<C> bres(n, distances, labels, k);
+            run.template operator()<C>(bres);
+        }
+    };
+
     if (is_similarity_metric(this->metric_type)) {
-        run.template operator()<HNSW::C_similarity>();
+        dispatch.template operator()<HNSW::C_similarity>();
     } else {
-        run.template operator()<HNSW::C_distance>();
+        dispatch.template operator()<HNSW::C_distance>();
     }
 }
 
