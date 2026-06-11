@@ -56,7 +56,7 @@ void HNSW::neighbor_range(idx_t no, int layer_no, size_t* begin, size_t* end)
     *end = o + cum_nb_neighbors(layer_no + 1);
 }
 
-HNSW::HNSW(int M) : rng(12345) {
+HNSW::HNSW(int M) : rng(12345), m(M) {
     set_default_probas(M, 1.0 / log(M));
     offsets.push_back(0);
 }

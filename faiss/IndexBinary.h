@@ -31,7 +31,7 @@ struct IndexBinary {
     using distance_t = int32_t;
 
     int d = 0;            ///< vector dimension
-    int code_size = 0;    ///< number of bytes per vector ( = d / 8 )
+    int code_size = 0;    ///< number of bytes per vector ( = d / 8 if not isExtendedIndex, otherwise, it can be an arbitrary code_size)
     idx_t ntotal = 0;     ///< total nb of indexed vectors
     bool verbose = false; ///< verbosity level
 
@@ -42,7 +42,8 @@ struct IndexBinary {
     /// type of metric this index uses for search
     MetricType metric_type = METRIC_L2;
 
-    explicit IndexBinary(idx_t d = 0, MetricType metric = METRIC_L2);
+    // If this is extended index,
+    explicit IndexBinary(idx_t d = 0, MetricType metric = METRIC_L2, bool isExtendedIndex = false);
 
     virtual ~IndexBinary();
 

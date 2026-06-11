@@ -16,11 +16,14 @@
 
 namespace faiss {
 
-IndexBinary::IndexBinary(idx_t d_, MetricType metric)
+IndexBinary::IndexBinary(idx_t d_, MetricType metric, bool isExtendedIndex)
         : d(static_cast<int>(d_)),
           code_size(static_cast<int>(d_ / 8)),
           metric_type(metric) {
-    FAISS_THROW_IF_NOT(d_ % 8 == 0);
+    if (isExtendedIndex == false) {
+        // If this is not extended, then it's required for dimension to be multiple of 8.
+        FAISS_THROW_IF_NOT(d_ % 8 == 0);
+    }
 }
 
 IndexBinary::~IndexBinary() = default;

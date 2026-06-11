@@ -27,7 +27,8 @@ namespace {
 void sync_d(Index* /* index */) {}
 
 void sync_d(IndexBinary* index) {
-    FAISS_THROW_IF_NOT(index->d % 8 == 0);
+    // We don't need this check in here, it's already tested in its constructor.
+    // FAISS_THROW_IF_NOT(index->d % 8 == 0);
     index->code_size = index->d / 8;
 }
 

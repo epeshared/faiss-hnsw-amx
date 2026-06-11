@@ -48,11 +48,11 @@ struct IndexBinaryHNSW : IndexBinary {
 
     explicit IndexBinaryHNSW();
     explicit IndexBinaryHNSW(int d, int M = 32);
-    explicit IndexBinaryHNSW(IndexBinary* storage, int M = 32);
+    explicit IndexBinaryHNSW(IndexBinary* storage, int M = 32, bool isExtendedBinaryIndex = false);
 
     ~IndexBinaryHNSW() override;
 
-    DistanceComputer* get_distance_computer() const;
+    virtual DistanceComputer* get_distance_computer() const;
 
     void add(idx_t n, const uint8_t* x) override;
 

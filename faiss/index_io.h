@@ -43,9 +43,9 @@ void write_index(const Index* idx, const char* fname, int io_flags = 0);
 void write_index(const Index* idx, FILE* f, int io_flags = 0);
 void write_index(const Index* idx, IOWriter* writer, int io_flags = 0);
 
-void write_index_binary(const IndexBinary* idx, const char* fname);
-void write_index_binary(const IndexBinary* idx, FILE* f);
-void write_index_binary(const IndexBinary* idx, IOWriter* writer);
+void write_index_binary(const IndexBinary* idx, const char* fname, int io_flags = 0);
+void write_index_binary(const IndexBinary* idx, FILE* f, int io_flags = 0);
+void write_index_binary(const IndexBinary* idx, IOWriter* writer, int io_flags = 0);
 
 // The read_index flags are implemented only for a subset of index types.
 const int IO_FLAG_READ_ONLY = 2;

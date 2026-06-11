@@ -1267,7 +1267,7 @@ static void write_binary_multi_hash_map(
     WRITEVECTOR(buf);
 }
 
-void write_index_binary(const IndexBinary* idx, IOWriter* f) {
+void write_index_binary(const IndexBinary* idx, IOWriter* f, int io_flags) {
     if (const IndexBinaryFlat* idxf =
                 dynamic_cast<const IndexBinaryFlat*>(idx)) {
         uint32_t h = fourcc("IBxF");
@@ -1306,7 +1306,12 @@ void write_index_binary(const IndexBinary* idx, IOWriter* f) {
         }
 
         write_HNSW(&idxhnsw->hnsw, f);
-        write_index_binary(idxhnsw->storage, f);
+        if (io_flags & IO_FLAG_SKIP_STORAGE) {
+            uint32_t n4 = fourcc("null");
+            WRITE1(n4);
+        } else {
+            write_index_binary(idxhnsw->storage, f, io_flags);
+        }
     } else if (
             const IndexBinaryIDMap* idxmap =
                     dynamic_cast<const IndexBinaryIDMap*>(idx)) {
@@ -1316,7 +1321,7 @@ void write_index_binary(const IndexBinary* idx, IOWriter* f) {
         // no need to store additional info for IndexIDMap2
         WRITE1(h);
         write_index_binary_header(idxmap, f);
-        write_index_binary(idxmap->index, f);
+        write_index_binary(idxmap->index, f, io_flags);
         WRITEVECTOR(idxmap->id_map);
     } else if (
             const IndexBinaryHash* idxh =
@@ -1346,14 +1351,14 @@ void write_index_binary(const IndexBinary* idx, IOWriter* f) {
     }
 }
 
-void write_index_binary(const IndexBinary* idx, FILE* f) {
+void write_index_binary(const IndexBinary* idx, FILE* f, int io_flags) {
     FileIOWriter writer(f);
-    write_index_binary(idx, &writer);
+    write_index_binary(idx, &writer, io_flags);
 }
 
-void write_index_binary(const IndexBinary* idx, const char* fname) {
+void write_index_binary(const IndexBinary* idx, const char* fname, int io_flags) {
     FileIOWriter writer(fname);
-    write_index_binary(idx, &writer);
+    write_index_binary(idx, &writer, io_flags);
 }
 
 } // namespace faiss

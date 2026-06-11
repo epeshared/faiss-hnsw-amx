@@ -152,6 +152,9 @@ struct HNSW {
     /// use bounded queue during exploration
     bool search_bounded_queue = true;
 
+    /// Size of the maximum neighbors. Note that the bottom graph can have 2 * m neighbors.
+    int m;
+
     /// use Panorama progressive pruning in search
     bool is_panorama = false;
 
