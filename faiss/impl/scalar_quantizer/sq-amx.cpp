@@ -19,6 +19,7 @@
 #include <immintrin.h>
 
 #include <cpuid.h>
+#include <cstdlib>
 #include <cstring>
 #include <vector>
 
@@ -129,6 +130,20 @@ inline void amx_bf16_dot16(
 //   _tile_dpfp16ps(2, 0, 1) == VEX.128.F2.0F38.W0 5C /r, ModRM=0xD0
 //                           == c4 e2 73 5c d0
 #define FAISS_TDPFP16PS_2_0_1 ".byte 0xc4,0xe2,0x73,0x5c,0xd0\n\t"
+
+// Runtime A/B switch: when KNN_DISABLE_AMX_SEARCH is set (and non-"0"), the
+// search-path distance-computer selection skips the AMX tile kernels and falls
+// back to the AVX512 scalar-quantizer computers. This lets the same deployed
+// .so serve both arms of an AMX-vs-AVX512 search benchmark by toggling an env
+// var at process launch -- no second build, no lib swap. Read once and cached;
+// env is fixed for a process lifetime.
+inline bool amx_search_disabled() {
+    static const bool disabled = [] {
+        const char* e = getenv("KNN_DISABLE_AMX_SEARCH");
+        return e != nullptr && e[0] != '\0' && !(e[0] == '0' && e[1] == '\0');
+    }();
+    return disabled;
+}
 
 inline bool cpu_has_amx_fp16() {
     unsigned eax, ebx, ecx, edx;
@@ -298,14 +313,17 @@ SQDistanceComputer* sq_select_distance_computer<SIMDLevel::AMX>(
         ScalarQuantizer::QuantizerType qtype,
         size_t d,
         const std::vector<float>& trained) {
-    if (qtype == ScalarQuantizer::QT_bf16 && metric == METRIC_INNER_PRODUCT) {
-        return new DCBF16Amx<SimilarityIP<SIMDLevel::AVX512>>(d, trained);
-    }
-    // AMX-FP16 is GNR+ only; gate on CPUID so the same binary degrades to the
-    // AVX512 fp16 path on SPR (which has AMX-BF16 but not AMX-FP16).
-    if (qtype == ScalarQuantizer::QT_fp16 && metric == METRIC_INNER_PRODUCT &&
-        cpu_has_amx_fp16()) {
-        return new DCFP16Amx<SimilarityIP<SIMDLevel::AVX512>>(d, trained);
+    if (!amx_search_disabled()) {
+        if (qtype == ScalarQuantizer::QT_bf16 &&
+            metric == METRIC_INNER_PRODUCT) {
+            return new DCBF16Amx<SimilarityIP<SIMDLevel::AVX512>>(d, trained);
+        }
+        // AMX-FP16 is GNR+ only; gate on CPUID so the same binary degrades to
+        // the AVX512 fp16 path on SPR (which has AMX-BF16 but not AMX-FP16).
+        if (qtype == ScalarQuantizer::QT_fp16 &&
+            metric == METRIC_INNER_PRODUCT && cpu_has_amx_fp16()) {
+            return new DCFP16Amx<SimilarityIP<SIMDLevel::AVX512>>(d, trained);
+        }
     }
     return sq_select_distance_computer<SIMDLevel::AVX512>(
             metric, qtype, d, trained);
